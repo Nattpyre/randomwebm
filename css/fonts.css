@@ -1,0 +1,21 @@
+/* font-family: "ArianAMUSerifRegular"; */
+@font-face {
+    font-family: "ArianAMUSerifRegular";
+    src: url("../fonts/ArianAMUSerifRegular/ArianAMUSerifRegular.eot");
+    src: url("../fonts/ArianAMUSerifRegular/ArianAMUSerifRegular.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/ArianAMUSerifRegular/ArianAMUSerifRegular.woff") format("woff"),
+    url("../fonts/ArianAMUSerifRegular/ArianAMUSerifRegular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/* font-family: "MolotRegular"; */
+@font-face {
+    font-family: "MolotRegular";
+    src: url("../fonts/MolotRegular/MolotRegular.eot");
+    src: url("../fonts/MolotRegular/MolotRegular.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/MolotRegular/MolotRegular.woff") format("woff"),
+    url("../fonts/MolotRegular/MolotRegular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
