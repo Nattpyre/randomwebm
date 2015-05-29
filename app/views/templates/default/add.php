@@ -20,7 +20,7 @@
 						<div class="input-group">
 							<span class="input-group-btn">
 								<span class="btn btn-success btn-file"> <i class="glyphicon glyphicon-folder-open"></i>
-									<input type="hidden" name="MAX_FILE_SIZE" value="8388608" />
+									<input type="hidden" name="MAX_FILE_SIZE" value="8388608">
 									Обзор...
 									<input type="file" name="webmUpload" accept="video/webm" required>
 								</span>

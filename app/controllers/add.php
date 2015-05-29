@@ -2,14 +2,14 @@
 
 class Add extends Controller
 {
-    function Index()
+    public function Index()
     {	
         $this->view->generate('add.php', 'template.php');
     }
 
-    function checkInputData()
+    public function checkInputData()
     {
-    	include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webm.php');
+    	require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webm.php');
         $this->model = new Webm;
 
         $webmMapper = new WebmMapper;
@@ -56,14 +56,14 @@ class Add extends Controller
 
 			$name = md5_file($_FILES['webmUpload']['tmp_name']).'.webm';
 
-			$checkResult = $webmMapper->checkWebm($name);
+			$checkResult = $webmMapper->checkWebmHash($name);
 
 			if($checkResult == TRUE) {
 				$data = 'Эта вебм уже есть в базе!';
 				return $data;
 			}
 
-			$tmpDir = SITE_PATH . DS . 'uploads' . DS;
+			$tmpDir = SITE_PATH . 'uploads' . DS;
 
 
 			if(!move_uploaded_file($_FILES['webmUpload']['tmp_name'], $tmpDir.$name)) {

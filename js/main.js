@@ -197,12 +197,21 @@ $(document).ready( function() {
 });
 });
 
+function Volume() {
+  $(".video").prop("volume", Cookies.get('volume'));
+}
+
 //Скрипт генерации случайной webm
 function RandomWebm() {
-  $('video').trigger('pause');
+  $('.video').trigger('pause');
+  var vol = $(".video").prop("volume");
+  if(vol != 1) {
+    Cookies.set('volume', vol);
+  }
   $(".static").show(0);
   $(".static").trigger('play');
   setTimeout("$('#webm').load('/ #webm');", 1000);
+  setTimeout(Volume, 1500);
   $('.play').prop('disabled', true);
   setTimeout("$('.play').prop('disabled', false);", 1000);
 }

@@ -2,14 +2,14 @@
 
 class Main extends Controller
 {
-	function __construct()
+	public function __construct()
     {
-        include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webm.php');
+        require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webm.php');
         $this->model = new Webm();
         $this->view = new View();
     }
 
-    function Index()
+    public function Index()
     {
         $this->view->generate('main.php', 'template.php');
     }

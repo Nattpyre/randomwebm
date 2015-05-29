@@ -1,16 +1,17 @@
 <?php
 
-class Route
+class FrontController
 {
     static function start()
     {
-        $controller_name = 'Main';
+        try {
+            $controller_name = 'Main';
         $action_name = 'index';
         
         $routes = explode('/', $_SERVER['REQUEST_URI']);
 
         if ( !empty($routes[1]) )
-        {	
+        {   
             $controller_name = $routes[1];
         }
         
@@ -23,15 +24,11 @@ class Route
         $controller_path = "app/controllers/".$controller_file;
         if(file_exists($controller_path))
         {
-            include "app/controllers/".$controller_file;
+            require "app/controllers/".$controller_file;
         }
         else
         {
-            /*
-            правильно было бы кинуть здесь исключение,
-            но для упрощения сразу сделаем редирект на страницу 404
-            */
-            Route::ErrorPage404();
+           throw new Exception('Ошибка 404. Запрашиваемая страница не найдена!');
         }
         
         $controller_class = ucfirst($controller_name);
@@ -44,16 +41,13 @@ class Route
         }
         else
         {
-            Route::ErrorPage404();
+            throw new Exception('Ошибка 404. Запрашиваемая страница не найдена!');
+        }
+
+        } catch (Exception $e) {
+            header('HTTP/1.1 404 Not Found');
+            require (SITE_PATH . '404.html');
         }
     
-    }
-    
-    function ErrorPage404()
-    {
-        $host = 'http://'.$_SERVER['HTTP_HOST'].'/';
-        header('HTTP/1.1 404 Not Found');
-        header("Status: 404 Not Found");
-        header('Location:'.$host.'404');
     }
 }

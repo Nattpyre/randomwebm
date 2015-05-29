@@ -11,17 +11,14 @@ class Login extends Model
 					           DB_PASS,
 					  	       DB_NAME
 					  		   );
-		if(!$this->db) {
-			die('Ошибка подключения к базе данных.');
+		if ($this->db->connect_errno) {
+    		throw new Exception("Не удалось подключиться к базе данных: ( . $this->db->connect_errno . ) . $this->db->connect_error");
 		}
 	}
 
 	public function logIn($hash)
 	{
-		$stmt = $this->db->prepare("SELECT hash FROM admin WHERE hash='$hash'");
-		$stmt->execute();
-		$data = $stmt->get_result();
-		$stmt->close();
+		$data = $this->db->query("SELECT hash FROM admin WHERE hash='$hash'");
 		return $data;
 	}
 }

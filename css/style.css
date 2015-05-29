@@ -94,6 +94,8 @@ body textarea {
 #add_webm .play,
 #about .play,
 #contacts .play {
+  display:block;
+  position:relative;
   width: 100%;
   height: 80px;
   margin-top: 20px;
@@ -129,20 +131,20 @@ body textarea {
 #about .play span,
 #contacts .play span {
   display: block;
-  position: relative;
+  position: absolute;
   font-family: MolotRegular;
   font-size: 50px;
-  bottom: 70%;
-  left: 17%;
+  bottom: 4%;
+  left: 36%;
 }
 #main_page .play img,
 #add_webm .play img,
 #about .play img,
 #contacts .play img {
-  position: relative;
+  position: absolute;
   width: 25%;
-  bottom: -13%;
-  left: -32%;
+  bottom: 11%;
+  left: 6%;
 }
 #main_page .col-sm-offset-1,
 #add_webm .col-sm-offset-1,

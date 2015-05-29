@@ -5,12 +5,12 @@
 	.play img{
 		width:27% !important;
 		top:18% !important;
-		left:-32% !important;
+		left:4% !important;
 	}
 	.play span{
-		font-size: 42px !important;
-		bottom: 54% !important;
-		left: 18% !important;
+		font-size: 44px !important;
+		bottom: 6% !important;
+		left: 34% !important;
 	}
 	.message-result{
 		width:50% !important;
@@ -25,8 +25,8 @@
 	}
 	.play img{
 		width: 36% !important;
-		left: 5% !important;
-		top: 1% !important;
+		left: 35% !important;
+		top: 6% !important;
 	}
 	#about img{
 		margin-bottom:20px;
@@ -62,13 +62,13 @@
 	}
 	.play img{
 		width: 27% !important;
-		left: -33% !important;
-		top: 14% !important;
+		left: 5% !important;
+		top: 13% !important;
 	}
 	.play span {
 		font-size:48px !important;
-		left: 17% !important;
-		bottom: 65% !important;
+		left: 36% !important;
+		bottom: 4% !important;
 	}
 }
 
@@ -98,8 +98,8 @@
 	}
 	.play img{
 		width: 40% !important;
-		left: 6% !important;
-		top: 0% !important;
+		left: 34% !important;
+		top: 7% !important;
 	}
 	.play span{
 		display:none !important;
@@ -117,6 +117,9 @@
 	}
 	.play{
 		height:60px !important;
+	}
+	.play img{
+		top:17% !important;
 	}
 }
 

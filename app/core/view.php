@@ -2,14 +2,14 @@
 
 class View
 {
-    public $template_view;
+    protected $template_view;
     
-    function generate($content_view, $template_view, $data = null)
+    function generate($content_view, $template_view, array $data = null)
     {
         if(is_array($data)) {
             extract($data);
         }
         
-        include '/app/views/templates/default/'.$template_view;
+        require '/app/views/templates/default/'.$template_view;
     }
 }

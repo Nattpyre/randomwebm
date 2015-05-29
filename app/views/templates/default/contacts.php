@@ -15,8 +15,8 @@
 						Facebook:
 						<a href="https://www.facebook.com/profile.php?id=100005043488592" target="_blank">https://www.facebook.com/profile.php?id=100005043488592</a>
 					</li>
-					<li>Email: nattpyre@gmail.com</li>
-					<li>Skype: rovnatt</li>
+					<li>Email: <a href="mailto:nattpyre@gmail.com">nattpyre@gmail.com</a></li>
+					<li>Skype: <a href="skype:rovnatt?call">rovnatt</a></li>
 				</ul>
 			</div>
 			<div class="col-md-6">

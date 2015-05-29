@@ -2,52 +2,41 @@
 
 class WebmMapper extends Webm
 {
-	public $db;
+	private $db;
 
 	public function __construct()
 	{
 		$this->db = new mysqli(DB_HOST,
-					 		   DB_USER,
-					           DB_PASS,
-					  	       DB_NAME
-					  		   );
-		if(!$this->db) {
-			die('Ошибка подключения к базе данных.');
+								DB_USER,
+								DB_PASS,
+								DB_NAME
+								);
+		if ($this->db->connect_errno) {
+    		throw new Exception("Не удалось подключиться к базе данных: ( . $this->db->connect_errno . ) . $this->db->connect_error");
 		}
 	}
 	public function getRandomWebm()
 	{
-		$data = $this->db->query("SELECT * 
-                                  FROM webms AS r1
-                                  JOIN ( SELECT (RAND() * (SELECT MAX(id) FROM webms)) AS id ) AS r2
-                                  WHERE r1.id >= r2.id
-                                  ORDER BY r1.id ASC 
-                                  LIMIT 1
-                                  ;");
-        
+		$data = $this->db->query("SELECT name, source 
+								  FROM webms AS r1
+								  JOIN ( SELECT (RAND() * (SELECT MAX(id) FROM webms)) AS id ) AS r2
+								  WHERE r1.id >= r2.id
+								  ORDER BY r1.id ASC 
+								  LIMIT 1;");
         $data = $data->fetch_assoc();
-
         return $data;
 	}
 
 	public function getNewWebm() 
 	{
-		$stmt = $this->db->prepare("SELECT * FROM uploaded_webms ORDER BY id LIMIT 1");
-		$stmt->execute();
-		$data = $stmt->get_result();
+		$data = $this->db->query("SELECT * FROM uploaded_webms ORDER BY id LIMIT 1");
 		$data = $data->fetch_assoc();
-		$stmt->close();
 		return $data;
 	}
 
-	public function checkWebm($name) {
-		$stmt = $this->db->prepare("SELECT * FROM webms WHERE name='$name'");
-		$stmt->execute();
-		$checkWebms = $stmt->get_result();
-		$stmt = $this->db->prepare("SELECT * FROM uploaded_webms WHERE name='$name'");
-		$stmt->execute();
-		$checkUploads = $stmt->get_result();
-
+	public function checkWebmHash($name) {
+		$checkWebms = $this->db->query("SELECT name FROM webms WHERE name='$name'");
+		$checkUploads = $this->db->query("SELECT name FROM uploaded_webms WHERE name='$name'");
 		if($checkWebms->num_rows > 0 || $checkUploads->num_rows > 0) {
 			return TRUE;
 		}
@@ -55,59 +44,71 @@ class WebmMapper extends Webm
 
 	public function uploadWebm($name, $source)
 	{
-		$stmt = $this->db->prepare("INSERT INTO uploaded_webms
+		if(!($stmt = $this->db->prepare("INSERT INTO uploaded_webms
 						   			(name, source)
 						   			VALUES
 						   			(?, ?) 
-						   			");
-		$stmt->bind_param('ss', $name, $source);
+						   			"))) {
+			throw new Exception("Не удалось подготовить данные: ( . $stmt->errno . ) . $stmt->error");
+		}
+		if(!$stmt->bind_param('ss', $name, $source)) {
+			throw new Excetion ("Не удалось привязать параметры: ( . $stmt->errno . ) . $stmt->error");
+		}
 		if($stmt->execute())
 		{
 			$stmt->close();
 			return TRUE;
 		} else {
 			$stmt->close();
-			return FALSE;
+			throw new Exception("Не удалось запустить команду Mysql: ( . $stmt->errno . ) . $stmt->error");
 		}
 	}
 
-	public function moveToMainBase ($name, $source)
+	public function moveWebm($name, $source)
 	{
-		$stmt = $this->db->prepare("INSERT INTO webms
+		if(!($stmt = $this->db->prepare("INSERT INTO webms
 								    (name, source)
 								    VALUES
 								    (?, ?)
-								    ");
-		$stmt->bind_param('ss', $name, $source);
-		$stmt->execute();
+								    "))){
+			throw new Exception("Не удалось подготовить данные: ( . $stmt->errno . ) . $stmt->error");
+		}
+		if(!$stmt->bind_param('ss', $name, $source)) {
+			throw new Excetion ("Не удалось привязать параметры: ( . $stmt->errno . ) . $stmt->error");
+		}
+		if(!$stmt->execute()) {
+			throw new Exception("Не удалось запустить команду Mysql: ( . $stmt->errno . ) . $stmt->error");
+		}
 		$stmt->close();
 	}
 
 	public function deleteWebm($id)
 	{
-		$stmt = $this->db->prepare("DELETE FROM uploaded_webms WHERE id=?");
-		$stmt->bind_param('i', $id);
-		$stmt->execute();
+		if(!($stmt = $this->db->prepare("DELETE FROM uploaded_webms WHERE id=?"))) {
+			throw new Exception("Не удалось подготовить данные: ( . $stmt->errno . ) . $stmt->error");
+		}
+		if(!$stmt->bind_param('i', $id)) {
+			throw new Excetion ("Не удалось привязать параметры: ( . $stmt->errno . ) . $stmt->error");
+		}
+		if(!$stmt->execute()) {
+			throw new Exception("Не удалось запустить команду Mysql: ( . $stmt->errno . ) . $stmt->error");
+		}
 		$stmt->close();
 	}
 
 	public function countWebms()
 	{
-		$stmt = $this->db->prepare("SELECT COUNT(id) FROM webms");
-		$stmt->execute();
-		$data = $stmt->get_result();
+		$data = $this->db->query("SELECT COUNT(id) FROM webms");
 		$data = $data->fetch_assoc();
-		$stmt->close();
+		$data = $data['COUNT(id)'];
 		return $data;
 	}
 
 	public function countUploads ()
 	{
-		$stmt = $this->db->prepare("SELECT COUNT(id) FROM uploaded_webms");
-		$stmt->execute();
-		$data = $stmt->get_result();
+		$data = $this->db->query("SELECT COUNT(id) FROM uploaded_webms");
 		$data = $data->fetch_assoc();
-		$stmt->close();
+		$data = $data['COUNT(id)'];
 		return $data;
 	}
 }

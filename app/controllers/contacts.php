@@ -9,7 +9,7 @@ class Contacts extends Controller
 
     public function checkMessage()
 	{
-		include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'message.php');
+		require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'message.php');
         $this->model = new Message;
 
         $messageMapper = new MessageMapper;

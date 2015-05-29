@@ -20,6 +20,7 @@
 	<script src="../vendor/formValidation.min.js"></script>
 	<script src="../vendor/bootstrap.min.js"></script>
 	<script src="../js/main.js"></script>
+	<script src="../js/js.cookie.js"></script>
 </head>
 <body>
 	<div class="container">

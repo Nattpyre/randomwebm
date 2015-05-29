@@ -8,6 +8,6 @@ class Webm extends Model
 
 	public function __construct()
 	{
-		include 'webmmapper.php';
+		require 'webmmapper.php';
 	}
 }

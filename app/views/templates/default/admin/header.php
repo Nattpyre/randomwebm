@@ -38,7 +38,7 @@
           echo '<p class="navbar-text navbar-right"><a class="navbar-link" href="/admin/logout">Выход</a></p>';
         }
        ?>
-	<p class="navbar-text navbar-right">Всего webm в базе: <?php echo htmlspecialchars($data['webmscount']['COUNT(id)'], ENT_QUOTES); ?></p>
+	<p class="navbar-text navbar-right">Всего webm в базе: <?php echo htmlspecialchars($data['webmscount'], ENT_QUOTES); ?></p>
     </div>
   </div>
 </nav>

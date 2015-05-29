@@ -2,22 +2,22 @@
 
 class Admin extends Controller
 {
-	public $webmMapper;
-	public $messageMapper;
+	private $webmMapper;
+	private $messageMapper;
 
 	public function __construct()
 	{
-		include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webm.php');
-        include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'message.php');
-        include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webmmapper.php');
-        include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'messagemapper.php');
+		require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webm.php');
+        require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'message.php');
+        require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'webmmapper.php');
+        require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'messagemapper.php');
 
         $this->webmMapper = new WebmMapper;
 		$this->messageMapper = new MessageMapper;
 		$this->view = new View;
 	}
 
-    function Index()
+    public function Index()
     {	
     	session_start();
 
@@ -37,7 +37,7 @@ class Admin extends Controller
 
     public function Login()
     {
-    	include (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'login.php');
+    	require (SITE_PATH . DS . 'app' . DS . 'models' . DS . 'login.php');
 
     	if(!isset($_COOKIE['token'])) {
     		$token = mt_rand(0, 999999999);
@@ -55,6 +55,7 @@ class Admin extends Controller
     		if(!empty($_COOKIE['token']) && !empty($_POST['token']) && $_POST['token'] == $_COOKIE['token']) {
     			$hash = md5($_POST['login'].';'.($_POST['password']));
 				$exist_user = $loginCheck->logIn($hash);
+				print_r($exist_user);
 				if($exist_user->num_rows > 0) {
 					session_start();
 					$_SESSION['admin'] = $_POST['login'];
@@ -85,12 +86,13 @@ class Admin extends Controller
 				$id = $_POST['webmID'];
 				$name = $_POST['webmName'];
 				$source = $_POST['webmSource'];
-				$this->webmMapper->moveToMainBase($name, $source);
+				$this->webmMapper->moveWebm($name, $source);
 				$this->webmMapper->deleteWebm($id);
 				header("Location: /admin");
 			}
 		} elseif($_POST['actionWebms'] == 'Delete') {
 			if(unlink(SITE_PATH . 'uploads' . DS . $_POST['webmName'])) {
+				$id = $_POST['webmID'];
 				$this->webmMapper->deleteWebm($id);
 				header("Location: /admin");
 			}

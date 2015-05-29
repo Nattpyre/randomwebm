@@ -10,6 +10,6 @@ class Message extends Model
 
 	public function __construct()
 	{
-		include 'messagemapper.php';
+		require 'messagemapper.php';
 	}
 }

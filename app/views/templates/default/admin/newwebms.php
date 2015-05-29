@@ -1,7 +1,7 @@
 <div class="new-webms">
 	<div class="embed-responsive embed-responsive-16by9">
 		<video controls="controls" tabindex="0">
-			<source src="../uploads/<?php echo htmlspecialchars($data['newwebm']['name'], ENT_QUOTES); ?>" type='video/webm; codecs="vp8, vorbis"' />
+			<source src="../webms/<?php echo htmlspecialchars($data['newwebm']['name'], ENT_QUOTES); ?>" type='video/webm; codecs="vp8, vorbis"' />
 		</video>
 	</div>
 	<div class="source-field">
