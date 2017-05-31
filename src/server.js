@@ -13,9 +13,9 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import expressGraphQL from 'express-graphql';
-import jwt from 'jsonwebtoken';
 import React from 'react';
-import ReactDOM from 'react-dom/server';
+import ReactDOM from 'react-dom/server'
+import injectTapEventPlugin from 'react-tap-event-plugin';;
 import PrettyError from 'pretty-error';
 import App from './components/App';
 import Html from './components/Html';
@@ -36,6 +36,10 @@ const app = express();
 // -----------------------------------------------------------------------------
 global.navigator = global.navigator || {};
 global.navigator.userAgent = global.navigator.userAgent || 'all';
+
+// React Tap Event Plugin
+
+injectTapEventPlugin();
 
 //
 // Register Node.js middleware

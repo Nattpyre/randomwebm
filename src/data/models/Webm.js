@@ -1,0 +1,65 @@
+import DataType from 'sequelize';
+import Model from '../sequelize';
+
+const Webm = Model.define('Webm', {
+
+  id: {
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV1,
+    primaryKey: true,
+  },
+
+  originalName: {
+    type: DataType.STRING(255),
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
+  },
+
+  source: {
+    type: DataType.STRING(255),
+  },
+
+  hash: {
+    type: DataType.STRING(64),
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
+  },
+
+  views: {
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      isNumeric: true,
+    },
+  },
+
+  url: {
+    type: DataType.STRING,
+    allowNull: false,
+    validate: {
+      isUrl: true,
+    },
+  },
+
+  previewUrl: {
+    type: DataType.STRING,
+    allowNull: false,
+    validate: {
+      isUrl: true,
+    },
+  },
+
+}, {
+
+  indexes: [
+    { fields: ['hash'] },
+  ],
+
+});
+
+export default Webm;
