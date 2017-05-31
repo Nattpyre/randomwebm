@@ -6,7 +6,7 @@ const title = 'Random Webm';
 
 export default {
 
-  path: '/random',
+  path: ['/', '/random'],
 
   action() {
     return {

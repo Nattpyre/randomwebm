@@ -15,7 +15,7 @@ import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import expressGraphQL from 'express-graphql';
 import React from 'react';
 import ReactDOM from 'react-dom/server'
-import injectTapEventPlugin from 'react-tap-event-plugin';;
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import PrettyError from 'pretty-error';
 import App from './components/App';
 import Html from './components/Html';
@@ -38,7 +38,6 @@ global.navigator = global.navigator || {};
 global.navigator.userAgent = global.navigator.userAgent || 'all';
 
 // React Tap Event Plugin
-
 injectTapEventPlugin();
 
 //
@@ -102,6 +101,7 @@ app.get('*', async (req, res, next) => {
         baseUrl: config.api.serverUrl,
         cookie: req.headers.cookie,
       }),
+      userAgent: req.headers['user-agent'],
     };
 
     const route = await router.resolve({
