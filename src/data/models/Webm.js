@@ -24,6 +24,7 @@ const Webm = Model.define('Webm', {
   hash: {
     type: DataType.STRING(64),
     allowNull: false,
+    unique: true,
     validate: {
       notEmpty: true,
     },
@@ -41,6 +42,7 @@ const Webm = Model.define('Webm', {
   url: {
     type: DataType.STRING,
     allowNull: false,
+    unique: true,
     validate: {
       isUrl: true,
     },
@@ -49,6 +51,7 @@ const Webm = Model.define('Webm', {
   previewUrl: {
     type: DataType.STRING,
     allowNull: false,
+    unique: true,
     validate: {
       isUrl: true,
     },

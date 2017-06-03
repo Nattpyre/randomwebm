@@ -1,0 +1,6 @@
+{
+  "name": "UploadDialog",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./UploadDialog.js"
+}

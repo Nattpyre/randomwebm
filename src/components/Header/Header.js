@@ -1,10 +1,10 @@
 import React from 'react';
-import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
+import { AppBar, Drawer, IconButton, MenuItem } from 'material-ui';
+import UploadIcon from 'material-ui/svg-icons/file/file-upload';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.css';
 import history from '../../history';
+import UploadDialog from '../UploadDialog';
 
 class Header extends React.Component {
 
@@ -13,23 +13,38 @@ class Header extends React.Component {
 
     this.state = {
       isLeftMenuOpen: false,
+      isUploadDialogOpen: false,
     };
   }
 
   toggleLeftMenu = () => {
     this.setState({
-      isLeftMenuOpen: !this.isLeftMenuOpen,
+      isLeftMenuOpen: !this.state.isLeftMenuOpen,
+    });
+  }
+
+  toggleUploadDialog = () => {
+    this.setState({
+      isUploadDialogOpen: !this.state.isUploadDialogOpen,
     });
   }
 
   render() {
     return (
       <div>
-        <AppBar title="Random Webm" onLeftIconButtonTouchTap={this.toggleLeftMenu} />
+        <AppBar
+          title="Random Webm"
+          onLeftIconButtonTouchTap={this.toggleLeftMenu}
+          iconElementRight={
+            <IconButton onTouchTap={this.toggleUploadDialog}>
+              <UploadIcon />
+            </IconButton>
+          }
+        />
         <Drawer
           docked={false}
           open={this.state.isLeftMenuOpen}
-          onRequestChange={open => this.setState({ isLeftMenuOpen: open })}
+          onRequestChange={this.toggleLeftMenu}
         >
           <MenuItem
             onTouchTap={() => {
@@ -40,6 +55,7 @@ class Header extends React.Component {
             Random Webm
           </MenuItem>
         </Drawer>
+        <UploadDialog isUploadDialogOpen={this.state.isUploadDialogOpen} toggleUploadDialog={this.toggleUploadDialog} />
       </div>
     );
   }
