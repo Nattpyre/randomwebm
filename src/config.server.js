@@ -33,15 +33,4 @@ module.exports = {
     // https://analytics.google.com/
     googleTrackingId: process.env.GOOGLE_TRACKING_ID, // UA-XXXXX-X
   },
-
-  // Amazon AWS
-  AWS: {
-    region: process.env.AWS_REGION || 'eu-central-1',
-    bucket: process.env.AWS_BUCKET || 'randomwebm',
-    webmsFolder: process.env.AWS_WEBMS_FOLDER || 'webms',
-    previewsFolder: process.env.AWS_PREVIEWS_FOLDER || 'previews',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'AKIAIF63LOXRTYNCLKEQ',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '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',
-    tokenDuration: process.env.AWS_TOKEN_DURATION || 43200,
-  },
 };
