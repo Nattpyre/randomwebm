@@ -72,7 +72,7 @@ class UploadDialog extends React.Component {
           canvas.height = video.videoHeight;
           canvas.getContext('2d').drawImage(video, 0, 0);
 
-          const preview = canvas.toDataURL();
+          const preview = canvas.toDataURL('image/jpeg');
 
           canvas.remove();
           video.remove();
@@ -80,7 +80,7 @@ class UploadDialog extends React.Component {
           this.context.fetch(preview)
             .then(res => res.arrayBuffer())
             .then((buffer) => {
-              const image = new File([buffer], 'test.png', { type: 'image/png' });
+              const image = new File([buffer], 'image.jpg', { type: 'image/jpeg' });
 
               callback(image);
             });
@@ -110,8 +110,8 @@ class UploadDialog extends React.Component {
 
         this.getVideoThumbnail(webm, (preview) => {
           this.bucket.upload({
-            Key: `${config.AWS.previewsFolder}/${hash}.png`,
-            ContentType: 'image/png',
+            Key: `${config.AWS.previewsFolder}/${hash}.jpg`,
+            ContentType: 'image/jpeg',
             Body: preview,
             ACL: 'public-read',
             StorageClass: 'STANDARD',
