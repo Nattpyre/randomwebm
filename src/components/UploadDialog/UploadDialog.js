@@ -1,8 +1,8 @@
+import AWS from 'aws-sdk';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, FlatButton } from 'material-ui';
 import Dropzone from 'react-dropzone';
-import AWS from 'aws-sdk';
 import SparkMD5 from 'spark-md5';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './UploadDialog.css';
@@ -11,6 +11,7 @@ import config from '../../config.client';
 class UploadDialog extends React.Component {
 
   static contextTypes = {
+    // Universal HTTP client
     fetch: PropTypes.func.isRequired,
   };
 
@@ -24,29 +25,16 @@ class UploadDialog extends React.Component {
   }
 
   componentDidMount = () => {
-    const STS = new AWS.STS({
-      credentials: new AWS.Credentials(
-        config.AWS.accessKeyId,
-        config.AWS.secretAccessKey,
-      ),
-      region: config.AWS.region,
-      apiVersion: 'latest',
-    });
+    const credentials = window.App.credentials;
 
-    STS.getSessionToken({
-      DurationSeconds: config.AWS.tokenDuration,
-    }, (err, data) => {
-      const credentials = data.Credentials;
+    AWS.config.region = config.AWS.region;
+    AWS.config.credentials = new AWS.Credentials(
+      credentials.AccessKeyId,
+      credentials.SecretAccessKey,
+      credentials.SessionToken,
+    );
 
-      AWS.config.region = config.AWS.region;
-      AWS.config.credentials = new AWS.Credentials(
-        credentials.AccessKeyId,
-        credentials.SecretAccessKey,
-        credentials.SessionToken,
-      );
-
-      this.bucket = new AWS.S3({ params: { Bucket: config.AWS.bucket } });
-    });
+    this.bucket = new AWS.S3({ params: { Bucket: config.AWS.bucket } });
   }
 
   getFileHash = (file, callback) => {

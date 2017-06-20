@@ -26,6 +26,7 @@ import models from './data/models';
 import schema from './data/schema';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
 import config from './config.server';
+import getCredentials from './getCredentials';
 
 const app = express();
 
@@ -67,6 +68,9 @@ app.use('/graphql', expressGraphQL(req => ({
 app.get('*', async (req, res, next) => {
   try {
     const css = new Set();
+
+    // Get temporary AWS credentials
+    const credentials = await getCredentials();
 
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
@@ -110,6 +114,7 @@ app.get('*', async (req, res, next) => {
     }
     data.app = {
       apiUrl: config.api.clientUrl,
+      credentials,
     };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);

@@ -1,16 +1,13 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+const s3 = require('./s3.json');
 
 /* eslint-disable max-len */
 
 if (process.env.BROWSER) {
   throw new Error('Do not import `config.js` from inside the client-side code.');
+}
+
+if (!Object.keys(s3).length) {
+  throw new Error('Cannot find s3 credentials file in source folder.');
 }
 
 module.exports = {
@@ -32,5 +29,13 @@ module.exports = {
   analytics: {
     // https://analytics.google.com/
     googleTrackingId: process.env.GOOGLE_TRACKING_ID, // UA-XXXXX-X
+  },
+
+  // Amazon AWS
+  AWS: {
+    region: process.env.AWS_REGION || 'eu-central-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || s3.accessKeyId,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || s3.secretAccessKey,
+    tokenDuration: process.env.AWS_TOKEN_DURATION || 43200,
   },
 };
