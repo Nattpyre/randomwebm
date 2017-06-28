@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, FlatButton } from 'material-ui';
+import { Dialog, FlatButton, LinearProgress, TextField } from 'material-ui';
 import Dropzone from 'react-dropzone';
 import SparkMD5 from 'spark-md5';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
@@ -19,8 +19,17 @@ class UploadDialog extends React.Component {
     super(props);
 
     this.bucket = null;
+    this.dropzoneInput = null;
+
     this.state = {
-      webm: null,
+      inProgress: false,
+      uploadPercent: 0,
+      webm: {
+        blob: null,
+        hash: null,
+        file: null,
+        source: null,
+      },
     };
   }
 
@@ -43,6 +52,12 @@ class UploadDialog extends React.Component {
     reader.onload = (e) => {
       const binary = e.target.result;
       const md5 = SparkMD5.hashBinary(binary);
+      const webmState = { ...this.state.webm };
+
+      webmState.hash = md5;
+      this.setState({
+        webm: webmState,
+      });
 
       callback(md5);
     };
@@ -51,7 +66,6 @@ class UploadDialog extends React.Component {
   }
 
   getVideoThumbnail = (file, callback) => {
-    const url = window.URL || window.webkitURL;
     const video = document.createElement('video');
     const events = ['loadedmetadata', 'loadeddata', 'suspend'];
     let eventsFired = 0;
@@ -92,11 +106,12 @@ class UploadDialog extends React.Component {
 
     events.forEach(event => video.addEventListener(event, handler));
 
-    video.src = url.createObjectURL(file);
+    video.src = this.state.webm.blob;
   }
 
   handleDropFiles = (files) => {
     const webm = files[0];
+    const url = window.URL || window.webkitURL;
 
     this.getFileHash(webm, (hash) => {
       this.context.fetch(`/graphql?query={
@@ -108,38 +123,74 @@ class UploadDialog extends React.Component {
           throw new Error('Webm already uploaded!');
         }
 
-        this.getVideoThumbnail(webm, (preview) => {
-          this.bucket.upload({
-            Key: `${config.AWS.previewsFolder}/${hash}.jpg`,
-            ContentType: 'image/jpeg',
-            Body: preview,
-            ACL: 'public-read',
-            StorageClass: 'STANDARD',
-          }).on('httpUploadProgress', (e) => {
-            console.log(Math.round((e.total ? ((e.loaded * 100) / e.total) : 0)));
-          }).send((err, previewInfo) => {
-            this.bucket.upload({
-              Key: `${config.AWS.webmsFolder}/${hash}.webm`,
-              ContentType: 'video/webm',
-              Body: webm,
-              ACL: 'public-read',
-              StorageClass: 'STANDARD',
-            }).on('httpUploadProgress', (e) => {
-              console.log(Math.round((e.total ? ((e.loaded * 100) / e.total) : 0)));
-            }).send((error, videoInfo) => {
-              this.context.fetch(`/graphql?query=mutation {
+        const webmState = { ...this.state.webm };
+
+        webmState.file = webm;
+        webmState.blob = url.createObjectURL(webm);
+
+        this.setState({
+          webm: webmState,
+        });
+      });
+    });
+  }
+
+  handleSourceInputChange = (e) => {
+    const webmState = { ...this.state.webm };
+
+    webmState.source = e.target.value;
+
+    this.setState({
+      webm: webmState,
+    });
+  }
+
+  handleUpload = () => {
+    const webm = this.state.webm.file;
+
+    this.getVideoThumbnail(webm, (preview) => {
+      this.setState({
+        inProgress: true,
+      });
+
+      this.bucket.upload({
+        Key: `${config.AWS.previewsFolder}/${this.state.webm.hash}.jpg`,
+        ContentType: 'image/jpeg',
+        Body: preview,
+        ACL: 'public-read',
+        StorageClass: 'STANDARD',
+      }).send((err, previewInfo) => {
+        this.bucket.upload({
+          Key: `${config.AWS.webmsFolder}/${this.state.webm.hash}.webm`,
+          ContentType: 'video/webm',
+          Body: webm,
+          ACL: 'public-read',
+          StorageClass: 'STANDARD',
+        }).on('httpUploadProgress', (e) => {
+          this.setState({
+            uploadPercent: Math.round((e.total ? ((e.loaded * 100) / e.total) : 0)),
+          });
+        }).send((error, videoInfo) => {
+          this.context.fetch(`/graphql?query=mutation {
                                         uploadWebm(
                                           originalName: "${webm.name}",
-                                          source: "${webm.name}",
-                                          hash: "${hash}",
+                                          source: "${this.state.webm.source}",
+                                          hash: "${this.state.webm.hash}",
                                           url: "${videoInfo.Location}",
                                           previewUrl: "${previewInfo.Location}"
                                         ) {
                                           id
                                         }
-                }`).then(response => response.json()).then((webmInfo) => {
-                console.log(webmInfo);
-              });
+          }`).then(response => response.json()).then(() => {
+            this.setState({
+              inProgress: false,
+              uploadPercent: 0,
+              webm: {
+                blob: null,
+                hash: null,
+                file: null,
+                source: null,
+              },
             });
           });
         });
@@ -151,15 +202,58 @@ class UploadDialog extends React.Component {
     return (
       <Dialog
         actions={[
-          <FlatButton label="Cancel" onTouchTap={this.props.toggleUploadDialog} />,
-          <FlatButton label="Upload" primary />,
+          <FlatButton label="Cancel" onTouchTap={this.props.toggleUploadDialog} disabled={this.state.inProgress} />,
+          <FlatButton label="Upload" onTouchTap={this.handleUpload} primary disabled={this.state.inProgress} />,
         ]}
         title="Upload Webm"
         open={this.props.isUploadDialogOpen}
-        onRequestClose={this.props.toggleUploadDialog}
+        onRequestClose={this.state.inProgress ? null : this.props.toggleUploadDialog}
       >
-        Choose a webm to upload!
-        <Dropzone onDrop={this.handleDropFiles} />
+        {
+          this.state.webm.blob && !this.state.inProgress ?
+            <div>
+              <video className={s.videoPreview} src={this.state.webm.blob} muted autoPlay loop />
+              <TextField
+                onBlur={this.handleSourceInputChange}
+                floatingLabelText="Webm source (optional)"
+                rows={2}
+                multiLine
+                fullWidth
+              />
+            </div>
+            :
+            <Dropzone
+              ref={(node) => {
+                this.dropzoneInput = node;
+              }}
+              className={s.dropzone}
+              onDrop={this.handleDropFiles}
+              accept="video/webm"
+              multiple={false}
+              disableClick
+            >
+              {
+                this.state.inProgress ?
+                  <div className={s.uploadWrapper}>
+                    <LinearProgress
+                      className={s.progressBar}
+                      mode={this.state.uploadPercent > 0 ? 'determinate' : 'indeterminate'}
+                      value={this.state.uploadPercent}
+                    />
+                    <span className={s.uploadingText}>
+                      {this.state.uploadPercent > 0 ? `${this.state.uploadPercent}%` : 'Please wait...'}
+                    </span>
+                  </div>
+                  :
+                  <div>
+                    Drop webm to this zone or just click
+                    <button type="button" className={s.uploadFileBtn} onClick={() => this.dropzoneInput.open()}>
+                      here
+                    </button>
+                  </div>
+              }
+            </Dropzone>
+        }
       </Dialog>
     );
   }
