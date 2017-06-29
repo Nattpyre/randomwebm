@@ -55,7 +55,10 @@ class Header extends React.Component {
             Random Webm
           </MenuItem>
         </Drawer>
-        <UploadDialog isUploadDialogOpen={this.state.isUploadDialogOpen} toggleUploadDialog={this.toggleUploadDialog} />
+        <UploadDialog
+          isUploadDialogOpen={this.state.isUploadDialogOpen}
+          toggleUploadDialog={this.toggleUploadDialog}
+        />
       </div>
     );
   }

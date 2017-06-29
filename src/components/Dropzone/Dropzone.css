@@ -1,0 +1,50 @@
+@import '../variables.css';
+
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 250px;
+  font-size: 24px;
+  border: 3px dashed #666;
+  border-radius: 6px;
+}
+
+.uploadFileBtn {
+  border: none;
+  background-color: transparent;
+  -webkit-appearance: none !important;
+  color: #00bcd4;
+  font-weight: 300;
+  cursor: pointer;
+  padding-right: 0;
+}
+
+.uploadFileBtn:hover,
+.uploadFileBtn:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+.uploadWrapper {
+  width: 100%;
+  text-align: center;
+  padding: 10px 50px;
+}
+
+.uploadingText {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.progressBar {
+  height: 6px !important;
+}
+
+.dropzoneWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}

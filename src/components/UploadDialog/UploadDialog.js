@@ -1,10 +1,10 @@
 import AWS from 'aws-sdk';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, FlatButton, LinearProgress, TextField } from 'material-ui';
-import Dropzone from 'react-dropzone';
+import { Dialog, FlatButton, TextField } from 'material-ui';
 import SparkMD5 from 'spark-md5';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import Dropzone from '../Dropzone';
 import s from './UploadDialog.css';
 import config from '../../config.client';
 
@@ -19,10 +19,11 @@ class UploadDialog extends React.Component {
     super(props);
 
     this.bucket = null;
-    this.dropzoneInput = null;
 
     this.state = {
       inProgress: false,
+      isUploaded: false,
+      error: null,
       uploadPercent: 0,
       webm: {
         blob: null,
@@ -78,7 +79,9 @@ class UploadDialog extends React.Component {
     const handler = (e) => {
       e.target.removeEventListener(e.type, handler);
 
-      if (++eventsFired === 3) {
+      eventsFired += 1;
+
+      if (eventsFired === 3) {
         video.addEventListener('seeked', () => {
           const canvas = document.createElement('canvas');
 
@@ -120,7 +123,11 @@ class UploadDialog extends React.Component {
                                             }
       }`).then(response => response.json()).then((data) => {
         if (data.data.webms.length > 0) {
-          throw new Error('Webm already uploaded!');
+          this.setState({
+            error: 'Webm already uploaded.',
+          });
+
+          return;
         }
 
         const webmState = { ...this.state.webm };
@@ -159,7 +166,15 @@ class UploadDialog extends React.Component {
         Body: preview,
         ACL: 'public-read',
         StorageClass: 'STANDARD',
-      }).send((err, previewInfo) => {
+      }).send((error, previewInfo) => {
+        if (error) {
+          this.setState({
+            error: error.message,
+          });
+
+          return;
+        }
+
         this.bucket.upload({
           Key: `${config.AWS.webmsFolder}/${this.state.webm.hash}.webm`,
           ContentType: 'video/webm',
@@ -170,7 +185,15 @@ class UploadDialog extends React.Component {
           this.setState({
             uploadPercent: Math.round((e.total ? ((e.loaded * 100) / e.total) : 0)),
           });
-        }).send((error, videoInfo) => {
+        }).send((err, videoInfo) => {
+          if (err || !webm.name || !this.state.webm.hash) {
+            this.setState({
+              error: err ? err.message : 'File uploading error.',
+            });
+
+            return;
+          }
+
           this.context.fetch(`/graphql?query=mutation {
                                         uploadWebm(
                                           originalName: "${webm.name}",
@@ -181,8 +204,17 @@ class UploadDialog extends React.Component {
                                         ) {
                                           id
                                         }
-          }`).then(response => response.json()).then(() => {
+          }`).then(response => response.json()).then((response) => {
+            if (response.errors) {
+              this.setState({
+                error: response.errors[0].message,
+              });
+
+              return;
+            }
+
             this.setState({
+              isUploaded: true,
               inProgress: false,
               uploadPercent: 0,
               webm: {
@@ -191,6 +223,7 @@ class UploadDialog extends React.Component {
                 file: null,
                 source: null,
               },
+              error: null,
             });
           });
         });
@@ -198,12 +231,34 @@ class UploadDialog extends React.Component {
     });
   }
 
+  handleClose = () => {
+    this.setState({
+      isUploaded: false,
+      inProgress: false,
+      uploadPercent: 0,
+      webm: {
+        blob: null,
+        hash: null,
+        file: null,
+        source: null,
+      },
+      error: null,
+    });
+
+    this.props.toggleUploadDialog();
+  }
+
   render() {
     return (
       <Dialog
         actions={[
-          <FlatButton label="Cancel" onTouchTap={this.props.toggleUploadDialog} disabled={this.state.inProgress} />,
-          <FlatButton label="Upload" onTouchTap={this.handleUpload} primary disabled={this.state.inProgress} />,
+          <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
+          <FlatButton
+            label="Upload"
+            onTouchTap={this.handleUpload}
+            disabled={this.state.inProgress || !this.state.webm.blob}
+            primary
+          />,
         ]}
         title="Upload Webm"
         open={this.props.isUploadDialogOpen}
@@ -223,36 +278,12 @@ class UploadDialog extends React.Component {
             </div>
             :
             <Dropzone
-              ref={(node) => {
-                this.dropzoneInput = node;
-              }}
-              className={s.dropzone}
-              onDrop={this.handleDropFiles}
-              accept="video/webm"
-              multiple={false}
-              disableClick
-            >
-              {
-                this.state.inProgress ?
-                  <div className={s.uploadWrapper}>
-                    <LinearProgress
-                      className={s.progressBar}
-                      mode={this.state.uploadPercent > 0 ? 'determinate' : 'indeterminate'}
-                      value={this.state.uploadPercent}
-                    />
-                    <span className={s.uploadingText}>
-                      {this.state.uploadPercent > 0 ? `${this.state.uploadPercent}%` : 'Please wait...'}
-                    </span>
-                  </div>
-                  :
-                  <div>
-                    Drop webm to this zone or just click
-                    <button type="button" className={s.uploadFileBtn} onClick={() => this.dropzoneInput.open()}>
-                      here
-                    </button>
-                  </div>
-              }
-            </Dropzone>
+              isUploaded={this.state.isUploaded}
+              inProgress={this.state.inProgress}
+              uploadPercent={this.state.uploadPercent}
+              handleDropFiles={this.handleDropFiles}
+              error={this.state.error}
+            />
         }
       </Dialog>
     );
