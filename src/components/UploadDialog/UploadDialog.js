@@ -112,9 +112,17 @@ class UploadDialog extends React.Component {
     video.src = this.state.webm.blob;
   }
 
-  handleDropFiles = (files) => {
+  handleDropFiles = (files, rejected) => {
     const webm = files[0];
     const url = window.URL || window.webkitURL;
+
+    if (rejected.length > 0) {
+      this.setState({
+        error: 'Wrong file format.',
+      });
+
+      return;
+    }
 
     this.getFileHash(webm, (hash) => {
       this.context.fetch(`/graphql?query={
@@ -262,7 +270,9 @@ class UploadDialog extends React.Component {
         ]}
         title="Upload Webm"
         open={this.props.isUploadDialogOpen}
-        onRequestClose={this.state.inProgress ? null : this.props.toggleUploadDialog}
+        onRequestClose={
+          !this.state.error && this.state.inProgress ? null : this.handleClose
+        }
       >
         {
           this.state.webm.blob && !this.state.inProgress ?
