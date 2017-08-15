@@ -205,7 +205,7 @@ class UploadDialog extends React.Component {
           this.context.fetch(`/graphql?query=mutation {
                                         uploadWebm(
                                           originalName: "${webm.name}",
-                                          source: "${this.state.webm.source}",
+                                          source: ${this.state.webm.source ? `"${this.state.webm.source}"` : null},
                                           hash: "${this.state.webm.hash}",
                                           url: "${videoInfo.Location}",
                                           previewUrl: "${previewInfo.Location}"

@@ -18,7 +18,7 @@ const Webm = Model.define('Webm', {
   },
 
   source: {
-    type: DataType.STRING(255),
+    type: DataType.TEXT,
   },
 
   hash: {

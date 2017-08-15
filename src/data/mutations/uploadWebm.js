@@ -2,7 +2,6 @@ import {
   GraphQLString as StringType,
   GraphQLNonNull as NonNull,
 } from 'graphql';
-import sequelize from '../sequelize';
 import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
 

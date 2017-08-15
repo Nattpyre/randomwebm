@@ -1,12 +1,74 @@
 @import '../../components/variables.css';
 
 .root {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 .container {
   margin: 0 auto;
-  padding: 0 0 40px;
+  padding: 0 0 2em;
   max-width: var(--max-content-width);
+}
+
+.webmWrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1em;
+}
+
+.webm {
+  height: 563px;
+  max-width: 100%;
+  background-color: black;
+}
+
+.webmInfoWrapper {
+  display: flex;
+  margin-top: 1em;
+}
+
+.webmInfo {
+  width: 50%;
+}
+
+.webmInfoHeader {
+  padding: 0.5em 0.75em;
+  font-size: 1em;
+  color: white;
+  background-color: #00bcd4;
+}
+
+.webmInfoBody {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em 0.75em;
+  min-height: 2.5em;
+}
+
+.webmRightBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
+}
+
+.webmViews {
+  font-size: 1.5em;
+  margin-bottom: auto;
+}
+
+.webmBtn button {
+  height: 3em !important;
+}
+
+.webmBtn div {
+  height: 100% !important;
+}
+
+.webmBtn button span {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  font-size: 1em !important;
 }
