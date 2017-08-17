@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RaisedButton, Paper } from 'material-ui';
+import { IconButton, RaisedButton, Paper } from 'material-ui';
+import LikeIcon from 'material-ui/svg-icons/action/thumb-up';
+import DislikeIcon from 'material-ui/svg-icons/action/thumb-down';
 import Linkify from 'linkifyjs/react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './RandomWebm.css';
@@ -19,6 +21,8 @@ class RandomWebm extends React.Component {
     this.videoInput = null;
     this.state = {
       webm: null,
+      isLiked: false,
+      isDisliked: false,
     };
   }
 
@@ -36,16 +40,130 @@ class RandomWebm extends React.Component {
                                             views,
                                             url,
                                             previewUrl,
+                                            likes,
+                                            dislikes,
                                             createdAt,
                                             updatedAt
                                           }
                                        }`,
     ).then(response => response.json()).then((data) => {
+      const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
+      let isLiked = false;
+
+      if (likedWebms.indexOf(data.data.randomWebm.id) !== -1) {
+        isLiked = true;
+      }
+
+      const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
+      let isDisliked = false;
+
+      if (dislikedWebms.indexOf(data.data.randomWebm.id) !== -1) {
+        isDisliked = true;
+      }
+
       this.setState({
         webm: data.data.randomWebm,
+        isLiked,
+        isDisliked,
       }, () => {
         this.videoInput.load();
       });
+    });
+  }
+
+  toggleLike = () => {
+    const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
+    const index = likedWebms.indexOf(this.state.webm.id);
+    const isLiked = this.state.isLiked;
+    const isDisliked = this.state.isDisliked;
+
+    if (isLiked && index !== -1) {
+      likedWebms.splice(index, 1);
+    } else {
+      likedWebms.push(this.state.webm.id);
+    }
+
+    localStorage.setItem('likedWebms', JSON.stringify(likedWebms));
+
+    const webmState = { ...this.state.webm };
+
+    webmState.likes = isLiked ? webmState.likes - 1 : webmState.likes + 1;
+
+    if (isDisliked) {
+      webmState.dislikes -= 1;
+    }
+
+    this.setState({
+      webm: webmState,
+      isLiked: !isLiked,
+      isDisliked: false,
+    });
+
+    this.context.fetch(`/graphql?query=mutation {
+                                        toggleLike(
+                                          id: "${webmState.id}",
+                                          hasLike: ${isLiked},
+                                          hasDislike: ${isDisliked}
+                                        ) {
+                                          id
+                                        }
+    }`).then(() => {
+      const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
+      const webmIndex = dislikedWebms.indexOf(webmState.id);
+
+      if (isDisliked && webmIndex !== -1) {
+        dislikedWebms.splice(webmIndex, 1);
+      }
+
+      localStorage.setItem('dislikedWebms', JSON.stringify(dislikedWebms));
+    });
+  }
+
+  toggleDislike = () => {
+    const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
+    const index = dislikedWebms.indexOf(this.state.webm.id);
+    const isLiked = this.state.isLiked;
+    const isDisliked = this.state.isDisliked;
+
+    if (isDisliked && index !== -1) {
+      dislikedWebms.splice(index, 1);
+    } else {
+      dislikedWebms.push(this.state.webm.id);
+    }
+
+    localStorage.setItem('dislikedWebms', JSON.stringify(dislikedWebms));
+
+    const webmState = { ...this.state.webm };
+
+    webmState.dislikes = isDisliked ? webmState.dislikes - 1 : webmState.dislikes + 1;
+
+    if (this.state.isLiked) {
+      webmState.likes -= 1;
+    }
+
+    this.setState({
+      webm: webmState,
+      isLiked: false,
+      isDisliked: !isDisliked,
+    });
+
+    this.context.fetch(`/graphql?query=mutation {
+                                        toggleDislike(
+                                          id: "${webmState.id}",
+                                          hasLike: ${isLiked},
+                                          hasDislike: ${isDisliked}
+                                        ) {
+                                          id
+                                        }
+    }`).then(() => {
+      const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
+      const webmIndex = likedWebms.indexOf(webmState.id);
+
+      if (isLiked && webmIndex !== -1) {
+        likedWebms.splice(webmIndex, 1);
+      }
+
+      localStorage.setItem('likedWebms', JSON.stringify(likedWebms));
     });
   }
 
@@ -82,6 +200,34 @@ class RandomWebm extends React.Component {
                     </Paper>
                     <div className={s.webmRightBlock}>
                       <span className={s.webmViews}>{this.state.webm.views} views</span>
+                      <div className={s.webmRatingWrapper}>
+                        <div
+                          className={
+                            this.state.isLiked ? s.ratingBtnWrapperActive : s.ratingBtnWrapper
+                          }
+                        >
+                          <IconButton
+                            className={s.ratingBtn}
+                            onTouchTap={this.toggleLike}
+                          >
+                            <LikeIcon color={this.state.isLiked ? '#000000' : '#767676'} hoverColor="#000000" />
+                          </IconButton>
+                          <span>{this.state.webm.likes}</span>
+                        </div>
+                        <div
+                          className={
+                            this.state.isDisliked ? s.ratingBtnWrapperActive : s.ratingBtnWrapper
+                          }
+                        >
+                          <IconButton
+                            className={s.ratingBtn}
+                            onTouchTap={this.toggleDislike}
+                          >
+                            <DislikeIcon color={this.state.isDisliked ? '#000000' : '#767676'} hoverColor="#000000" />
+                          </IconButton>
+                          <span>{this.state.webm.dislikes}</span>
+                        </div>
+                      </div>
                       <RaisedButton className={s.webmBtn} label="Random Webm!" onTouchTap={this.getRandomWebm} primary />
                     </div>
                   </div>

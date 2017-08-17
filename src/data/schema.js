@@ -6,6 +6,8 @@ import {
 import randomWebm from './queries/randomWebm';
 import webms from './queries/webms';
 import uploadWebm from './mutations/uploadWebm';
+import toggleLike from './mutations/toggleLike';
+import toggleDislike from './mutations/toggleDislike';
 
 const schema = new Schema({
   query: new ObjectType({
@@ -19,6 +21,8 @@ const schema = new Schema({
     name: 'Mutation',
     fields: {
       uploadWebm,
+      toggleLike,
+      toggleDislike,
     },
   }),
 });

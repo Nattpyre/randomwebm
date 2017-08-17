@@ -57,6 +57,24 @@ const Webm = Model.define('Webm', {
     },
   },
 
+  likes: {
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      isNumeric: true,
+    },
+  },
+
+  dislikes: {
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      isNumeric: true,
+    },
+  },
+
 }, {
 
   indexes: [

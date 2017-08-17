@@ -16,6 +16,8 @@ const WebmType = new ObjectType({
     views: { type: new NonNull(IntegerType) },
     url: { type: new NonNull(StringType) },
     previewUrl: { type: new NonNull(StringType) },
+    likes: { type: new NonNull(IntegerType) },
+    dislikes: { type: new NonNull(IntegerType) },
     createdAt: { type: new NonNull(StringType) },
     updatedAt: { type: new NonNull(StringType) },
   },
