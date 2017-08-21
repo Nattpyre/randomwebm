@@ -162,6 +162,7 @@ class UploadDialog extends React.Component {
 
         this.setState({
           webm: webmState,
+          error: null,
         });
       });
     });
