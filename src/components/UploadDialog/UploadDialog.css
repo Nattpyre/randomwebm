@@ -1,3 +1,7 @@
+.uploadDialog h3 + div {
+  overflow-y: scroll !important;
+}
+
 .previewGenerator {
   display: block;
   height: 1px;

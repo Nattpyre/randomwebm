@@ -46,6 +46,22 @@
   min-height: 2.5em;
 }
 
+.tagsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tagsWrapper .tagItem:not(:last-of-type)::after {
+  content: ',';
+  color: black;
+}
+
+.tagItem {
+  text-decoration: none;
+  margin-right: 0.5em;
+  color: #00bcd4;
+}
+
 .webmRightBlock {
   display: flex;
   flex-direction: column;
@@ -55,12 +71,12 @@
 
 .webmViews {
   font-size: 1.5em;
-  margin-bottom: auto;
 }
 
 .webmRatingWrapper {
   display: flex;
   align-items: center;
+  margin-bottom: 0.25em;
 }
 
 .ratingBtnWrapper {
@@ -92,7 +108,7 @@
 }
 
 .webmBtn {
-  margin-top: 0.5em;
+  margin-top: auto;
 }
 
 .webmBtn button {

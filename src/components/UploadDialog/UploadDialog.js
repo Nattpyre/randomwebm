@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, FlatButton, TextField } from 'material-ui';
+import ChipInput from 'material-ui-chip-input';
 import SparkMD5 from 'spark-md5';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Dropzone from '../Dropzone';
@@ -25,6 +26,8 @@ class UploadDialog extends React.Component {
       isUploaded: false,
       error: null,
       uploadPercent: 0,
+      autoCompleteTags: [],
+      tagsArray: [],
       webm: {
         blob: null,
         hash: null,
@@ -35,6 +38,19 @@ class UploadDialog extends React.Component {
   }
 
   componentDidMount = () => {
+    this.context.fetch(`/graphql?query=
+    {
+      getTags {
+        name
+      }
+    }`).then(response => response.json()).then((data) => {
+      const autoCompleteTags = data.data.getTags.map(tag => tag.name);
+
+      this.setState({
+        autoCompleteTags,
+      });
+    });
+
     const credentials = window.App.credentials;
 
     AWS.config.region = config.AWS.region;
@@ -125,12 +141,13 @@ class UploadDialog extends React.Component {
     }
 
     this.getFileHash(webm, (hash) => {
-      this.context.fetch(`/graphql?query={
-                                            webms(hash:"${hash}") {
-                                              id
-                                            }
+      this.context.fetch(`/graphql?query=
+        {
+          getWebms(hash:"${hash}") {
+            id
+          }
       }`).then(response => response.json()).then((data) => {
-        if (data.data.webms.length > 0) {
+        if (data.data.getWebms.length > 0) {
           this.setState({
             error: 'Webm already uploaded.',
           });
@@ -202,16 +219,18 @@ class UploadDialog extends React.Component {
             return;
           }
 
-          this.context.fetch(`/graphql?query=mutation {
-                                        uploadWebm(
-                                          originalName: "${webm.name}",
-                                          source: ${this.state.webm.source ? `"${this.state.webm.source}"` : null},
-                                          hash: "${this.state.webm.hash}",
-                                          url: "${videoInfo.Location}",
-                                          previewUrl: "${previewInfo.Location}"
-                                        ) {
-                                          id
-                                        }
+          this.context.fetch(`/graphql?query=
+            mutation {
+              uploadWebm(
+                originalName: "${webm.name}",
+                source: ${this.state.webm.source ? `"${this.state.webm.source}"` : null},
+                hash: "${this.state.webm.hash}",
+                url: "${videoInfo.Location}",
+                previewUrl: "${previewInfo.Location}",
+                tags: ${JSON.stringify(this.state.tagsArray)}
+              ) {
+                id
+              }
           }`).then(response => response.json()).then((response) => {
             if (response.errors) {
               this.setState({
@@ -225,6 +244,7 @@ class UploadDialog extends React.Component {
               isUploaded: true,
               inProgress: false,
               uploadPercent: 0,
+              tagsArray: [],
               webm: {
                 blob: null,
                 hash: null,
@@ -244,6 +264,7 @@ class UploadDialog extends React.Component {
       isUploaded: false,
       inProgress: false,
       uploadPercent: 0,
+      tagsArray: [],
       webm: {
         blob: null,
         hash: null,
@@ -256,9 +277,30 @@ class UploadDialog extends React.Component {
     this.props.toggleUploadDialog();
   }
 
+  addTag = (tag) => {
+    const tags = this.state.tagsArray;
+
+    tags.push(tag);
+
+    this.setState({
+      tagsArray: tags,
+    });
+  }
+
+  deleteTag = (tag, index) => {
+    const tags = this.state.tagsArray;
+
+    tags.splice(index, 1);
+
+    this.setState({
+      tagsArray: tags,
+    });
+  }
+
   render() {
     return (
       <Dialog
+        className={s.uploadDialog}
         actions={[
           <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
           <FlatButton
@@ -278,11 +320,17 @@ class UploadDialog extends React.Component {
           this.state.webm.blob && !this.state.inProgress ?
             <div>
               <video className={s.videoPreview} src={this.state.webm.blob} muted autoPlay loop />
+              <ChipInput
+                value={this.state.tagsArray}
+                dataSource={this.state.autoCompleteTags}
+                onRequestAdd={this.addTag}
+                onRequestDelete={this.deleteTag}
+                floatingLabelText="Tags"
+                fullWidth
+              />
               <TextField
                 onBlur={this.handleSourceInputChange}
                 floatingLabelText="Webm source (optional)"
-                rows={2}
-                multiLine
                 fullWidth
               />
             </div>

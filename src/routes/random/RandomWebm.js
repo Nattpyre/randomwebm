@@ -5,6 +5,7 @@ import LikeIcon from 'material-ui/svg-icons/action/thumb-up';
 import DislikeIcon from 'material-ui/svg-icons/action/thumb-down';
 import Linkify from 'linkifyjs/react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import Link from '../../components/Link';
 import s from './RandomWebm.css';
 
 class RandomWebm extends React.Component {
@@ -31,21 +32,26 @@ class RandomWebm extends React.Component {
   }
 
   getRandomWebm = () => {
-    this.context.fetch(`/graphql?query={
-                                          randomWebm {
-                                            id,
-                                            originalName,
-                                            source,
-                                            hash,
-                                            views,
-                                            url,
-                                            previewUrl,
-                                            likes,
-                                            dislikes,
-                                            createdAt,
-                                            updatedAt
-                                          }
-                                       }`,
+    this.context.fetch(`/graphql?query=
+    {
+      randomWebm {
+        id,
+        originalName,
+        source,
+        hash,
+        views,
+        url,
+        previewUrl,
+        likes,
+        dislikes,
+        createdAt,
+        updatedAt,
+        tags {
+          id,
+          name
+        }
+      }
+    }`,
     ).then(response => response.json()).then((data) => {
       const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
       let isLiked = false;
@@ -99,14 +105,15 @@ class RandomWebm extends React.Component {
       isDisliked: false,
     });
 
-    this.context.fetch(`/graphql?query=mutation {
-                                        toggleLike(
-                                          id: "${webmState.id}",
-                                          hasLike: ${isLiked},
-                                          hasDislike: ${isDisliked}
-                                        ) {
-                                          id
-                                        }
+    this.context.fetch(`/graphql?query=
+      mutation {
+        toggleLike(
+          id: "${webmState.id}",
+          hasLike: ${isLiked},
+          hasDislike: ${isDisliked}
+        ) {
+          id
+        }
     }`).then(() => {
       const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
       const webmIndex = dislikedWebms.indexOf(webmState.id);
@@ -147,14 +154,15 @@ class RandomWebm extends React.Component {
       isDisliked: !isDisliked,
     });
 
-    this.context.fetch(`/graphql?query=mutation {
-                                        toggleDislike(
-                                          id: "${webmState.id}",
-                                          hasLike: ${isLiked},
-                                          hasDislike: ${isDisliked}
-                                        ) {
-                                          id
-                                        }
+    this.context.fetch(`/graphql?query=
+      mutation {
+        toggleDislike(
+          id: "${webmState.id}",
+          hasLike: ${isLiked},
+          hasDislike: ${isDisliked}
+        ) {
+          id
+        }
     }`).then(() => {
       const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
       const webmIndex = likedWebms.indexOf(webmState.id);
@@ -193,6 +201,23 @@ class RandomWebm extends React.Component {
                         {
                           this.state.webm.source ?
                             <strong>Source: <Linkify options={{ target: { url: '_blank' } }}>{this.state.webm.source}</Linkify></strong>
+                            :
+                            null
+                        }
+                        {
+                          this.state.webm.tags.length > 0 ?
+                            <div>
+                              <strong>Tags: </strong>
+                              <div className={s.tagsWrapper}>
+                                {
+                                  this.state.webm.tags.map(tag => (
+                                    <Link key={tag.id} to={`/tag/${tag.name.toLowerCase()}`} className={s.tagItem}>
+                                      {tag.name}
+                                    </Link>
+                                  ))
+                                }
+                              </div>
+                            </div>
                             :
                             null
                         }

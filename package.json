@@ -31,6 +31,7 @@
     "jsonwebtoken": "^7.3.0",
     "linkifyjs": "^2.1.4",
     "material-ui": "^0.18.1",
+    "material-ui-chip-input": "^0.16.1",
     "normalize.css": "^7.0.0",
     "pg": "^6.2.3",
     "pretty-error": "^2.1.0",

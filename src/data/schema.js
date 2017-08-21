@@ -4,17 +4,21 @@ import {
 } from 'graphql';
 
 import randomWebm from './queries/randomWebm';
-import webms from './queries/webms';
+import getWebms from './queries/getWebms';
+import getTags from './queries/getTags';
 import uploadWebm from './mutations/uploadWebm';
 import toggleLike from './mutations/toggleLike';
 import toggleDislike from './mutations/toggleDislike';
+import addTag from './mutations/addTag';
+import deleteTag from './mutations/deleteTag';
 
 const schema = new Schema({
   query: new ObjectType({
     name: 'Query',
     fields: {
       randomWebm,
-      webms,
+      getWebms,
+      getTags,
     },
   }),
   mutation: new ObjectType({
@@ -23,6 +27,8 @@ const schema = new Schema({
       uploadWebm,
       toggleLike,
       toggleDislike,
+      addTag,
+      deleteTag,
     },
   }),
 });

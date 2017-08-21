@@ -4,7 +4,10 @@ import {
   GraphQLString as StringType,
   GraphQLInt as IntegerType,
   GraphQLNonNull as NonNull,
+  GraphQLList as List,
 } from 'graphql';
+import TagType from './TagType';
+import Webm from '../models/Webm';
 
 const WebmType = new ObjectType({
   name: 'Webm',
@@ -20,6 +23,12 @@ const WebmType = new ObjectType({
     dislikes: { type: new NonNull(IntegerType) },
     createdAt: { type: new NonNull(StringType) },
     updatedAt: { type: new NonNull(StringType) },
+    tags: {
+      type: new List(TagType),
+      resolve(model) {
+        return Webm.findByPrimary(model.id).then(webm => webm.getTags());
+      },
+    },
   },
 });
 
