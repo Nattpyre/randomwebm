@@ -6,7 +6,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
-
 @import '../variables.css';
 
 /*
@@ -25,10 +24,20 @@ html {
   font-size: 1em; /* ~16px; */
   font-family: var(--font-family-base);
   line-height: 1.375; /* ~22px */
+  min-height: 100%;
 }
 
 body {
+  position: absolute;
+  width: 100%;
+  height: 100%;
   margin: 0;
+}
+
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 a {
@@ -143,7 +152,6 @@ textarea {
    * Don't show links that are fragment identifiers,
    * or use the `javascript:` pseudo protocol
    */
-
   a[href^='#']::after,
   a[href^='javascript:']::after {
     content: '';
@@ -159,7 +167,6 @@ textarea {
    * Printing Tables:
    * http://css-discuss.incutio.com/wiki/Printing_Tables
    */
-
   thead {
     display: table-header-group;
   }

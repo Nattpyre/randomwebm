@@ -21,8 +21,26 @@ const WebmType = new ObjectType({
     previewUrl: { type: new NonNull(StringType) },
     likes: { type: new NonNull(IntegerType) },
     dislikes: { type: new NonNull(IntegerType) },
-    createdAt: { type: new NonNull(StringType) },
-    updatedAt: { type: new NonNull(StringType) },
+    createdAt: {
+      type: new NonNull(StringType),
+      resolve(model) {
+        return new Date(model.createdAt).toLocaleString('en-US', {
+          day: 'numeric',
+          year: 'numeric',
+          month: 'long',
+        });
+      },
+    },
+    updatedAt: {
+      type: new NonNull(StringType),
+      resolve(model) {
+        return new Date(model.updatedAt).toLocaleString('en-US', {
+          day: 'numeric',
+          year: 'numeric',
+          month: 'long',
+        });
+      },
+    },
     tags: {
       type: new List(TagType),
       resolve(model) {

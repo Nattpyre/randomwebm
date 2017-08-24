@@ -9,9 +9,6 @@ import Link from '../../components/Link';
 import s from './RandomWebm.css';
 
 class RandomWebm extends React.Component {
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-  };
 
   static contextTypes = {
     fetch: PropTypes.func.isRequired,
@@ -196,7 +193,7 @@ class RandomWebm extends React.Component {
                       <div className={s.webmInfoHeader}><strong>Information</strong></div>
                       <div className={s.webmInfoBody}>
                         <strong>
-                          Uploaded: {new Date(this.state.webm.createdAt).toLocaleString('en-US', { day: 'numeric', year: 'numeric', month: 'long' })}
+                          Uploaded: {this.state.webm.createdAt}
                         </strong>
                         {
                           this.state.webm.source ?

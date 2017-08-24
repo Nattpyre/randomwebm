@@ -9,7 +9,12 @@ const TagType = new ObjectType({
   name: 'Tag',
   fields: {
     id: { type: new NonNull(ID) },
-    name: { type: new NonNull(StringType) },
+    name: {
+      type: new NonNull(StringType),
+      resolve(model) {
+        return model.name.charAt(0).toUpperCase() + model.name.slice(1);
+      },
+    },
     createdAt: { type: new NonNull(StringType) },
     updatedAt: { type: new NonNull(StringType) },
   },

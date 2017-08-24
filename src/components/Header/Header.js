@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { AppBar, Divider, Drawer, IconButton, MenuItem, Subheader } from 'material-ui';
+import HomeIcon from 'material-ui/svg-icons/action/home';
+import ContactsIcon from 'material-ui/svg-icons/action/feedback';
 import UploadIcon from 'material-ui/svg-icons/file/file-upload';
+import RecentIcon from 'material-ui/svg-icons/action/date-range';
+import TopRatedIcon from 'material-ui/svg-icons/action/thumb-up';
+import MostViewedIcon from 'material-ui/svg-icons/image/remove-red-eye';
+import TagIcon from 'material-ui/svg-icons/action/label-outline';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.css';
 import history from '../../history';
@@ -73,11 +79,22 @@ class Header extends React.Component {
           onRequestChange={this.toggleLeftMenu}
         >
           <Subheader>Pages</Subheader>
-          <MenuItem onTouchTap={() => this.handleClick('/random')}>
+          <MenuItem leftIcon={<HomeIcon />} onTouchTap={() => this.handleClick('/random')}>
             Home
           </MenuItem>
-          <MenuItem onTouchTap={() => this.handleClick('/contacts')}>
+          <MenuItem leftIcon={<ContactsIcon />} onTouchTap={() => this.handleClick('/contacts')}>
             Contacts
+          </MenuItem>
+          <Divider />
+          <Subheader>Webms</Subheader>
+          <MenuItem leftIcon={<RecentIcon />} onTouchTap={() => this.handleClick('/recent')}>
+            Recent
+          </MenuItem>
+          <MenuItem leftIcon={<TopRatedIcon />} onTouchTap={() => this.handleClick('/top')}>
+            Top Rated
+          </MenuItem>
+          <MenuItem leftIcon={<MostViewedIcon />} onTouchTap={() => this.handleClick('/popular')}>
+            Most Viewed
           </MenuItem>
           <Divider />
           <Subheader>Top tags</Subheader>
@@ -86,7 +103,11 @@ class Header extends React.Component {
               <div>
                 {
                   this.state.tags.map(tag => (
-                    <MenuItem key={tag.id} onTouchTap={() => this.handleClick(`/tag/${tag.name.toLowerCase()}`)}>
+                    <MenuItem
+                      key={tag.id}
+                      leftIcon={<TagIcon />}
+                      onTouchTap={() => this.handleClick(`/tag/${tag.name.toLowerCase()}`)}
+                    >
                       {tag.name}
                     </MenuItem>
                   ))

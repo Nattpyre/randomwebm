@@ -40,6 +40,7 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.2",
+    "react-infinite-scroller": "^1.0.15",
     "react-tap-event-plugin": "^2.0.1",
     "sequelize": "^3.30.4",
     "serialize-javascript": "^1.3.0",

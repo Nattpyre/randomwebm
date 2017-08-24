@@ -19,7 +19,7 @@ const uploadWebm = {
   },
   resolve(value, { originalName, source, hash, url, previewUrl, tags }) {
     return Webm.create({ originalName, source, hash, url, previewUrl }).then((webm) => {
-      const promises = tags.map(tag => Tag.findOrCreate({ where: { name: tag } }));
+      const promises = tags.map(tag => Tag.findOrCreate({ where: { name: tag.toLowerCase() } }));
 
       Promise.all(promises).then((results) => {
         const tagsArray = results.map(result => result[0]);

@@ -14,7 +14,7 @@ const addTag = {
     webmId: { type: ID },
   },
   resolve(value, { name, webmId }) {
-    return Tag.findOrCreate({ where: { name } }).then((data) => {
+    return Tag.findOrCreate({ where: { name: name.toLowerCase() } }).then((data) => {
       const tag = data[0];
 
       if (webmId) {
