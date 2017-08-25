@@ -3,8 +3,8 @@ import {
   GraphQLObjectType as ObjectType,
 } from 'graphql';
 
-import randomWebm from './queries/randomWebm';
-import getWebms from './queries/getWebms';
+import getWebm from './queries/getWebm';
+import getWebmList from './queries/getWebmList';
 import getTags from './queries/getTags';
 import uploadWebm from './mutations/uploadWebm';
 import toggleLike from './mutations/toggleLike';
@@ -16,8 +16,8 @@ const schema = new Schema({
   query: new ObjectType({
     name: 'Query',
     fields: {
-      randomWebm,
-      getWebms,
+      getWebm,
+      getWebmList,
       getTags,
     },
   }),

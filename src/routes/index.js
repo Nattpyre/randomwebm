@@ -14,6 +14,7 @@ export default {
     require('./register').default,
     require('./admin').default,
     require('./tag').default,
+    require('./webm').default,
 
     require('./notFound').default,
   ],

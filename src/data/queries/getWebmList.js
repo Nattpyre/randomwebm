@@ -17,19 +17,16 @@ const OrderType = new EnumType({
   },
 });
 
-const getWebms = {
+const getWebmList = {
   type: new List(WebmType),
   args: {
-    hash: { type: StringType },
     tagName: { type: StringType },
     order: { type: OrderType },
     pageSize: { type: IntegerType },
     page: { type: IntegerType },
   },
-  resolve(value, { hash, tagName, order, pageSize, page }) {
-    if (hash) {
-      return Webm.findAll({ where: { hash }, raw: true }).then(results => results);
-    } else if (tagName) {
+  resolve(value, { tagName, order, pageSize, page }) {
+    if (tagName) {
       return Tag.find({ where: { name: tagName } }).then(tag => tag.getWebms({
         order: order ? [[order, 'DESC']] : null,
         offset: (page - 1) * pageSize,
@@ -45,4 +42,4 @@ const getWebms = {
   },
 };
 
-export default getWebms;
+export default getWebmList;

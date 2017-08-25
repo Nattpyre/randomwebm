@@ -143,11 +143,11 @@ class UploadDialog extends React.Component {
     this.getFileHash(webm, (hash) => {
       this.context.fetch(`/graphql?query=
         {
-          getWebms(hash:"${hash}") {
+          getWebm(hash:"${hash}") {
             id
           }
       }`).then(response => response.json()).then((data) => {
-        if (data.data.getWebms.length > 0) {
+        if (data.data.getWebm) {
           this.setState({
             error: 'Webm already uploaded.',
           });

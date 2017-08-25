@@ -1,6 +1,6 @@
 import {
   GraphQLObjectType as ObjectType,
-  GraphQLID as ID,
+  GraphQLInt as IntegerType,
   GraphQLString as StringType,
   GraphQLNonNull as NonNull,
 } from 'graphql';
@@ -8,7 +8,7 @@ import {
 const TagType = new ObjectType({
   name: 'Tag',
   fields: {
-    id: { type: new NonNull(ID) },
+    id: { type: new NonNull(IntegerType) },
     name: {
       type: new NonNull(StringType),
       resolve(model) {

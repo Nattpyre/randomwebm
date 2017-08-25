@@ -4,11 +4,11 @@ import Webm from '../../components/Webm';
 
 export default {
 
-  path: ['/', '/random'],
+  path: '/webm/:id',
 
-  action() {
+  action(context) {
     return {
-      component: <Layout><Webm isRandom /></Layout>,
+      component: <Layout><Webm id={context.params.id} /></Layout>,
     };
   },
 

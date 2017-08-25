@@ -34,33 +34,33 @@ class WebmList extends React.Component {
       order: this.props.order,
       pageSize: 24,
       page: 1,
-      hasMore: true,
+      hasMore: false,
       isLoading: false,
     };
   }
 
   componentDidMount = () => {
-    this.getWebms(this.props.title);
+    this.getWebmList(this.props.title);
   }
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
       webms: [],
       page: 1,
-      hasMore: true,
+      hasMore: false,
       order: nextProps.order,
     }, () => {
-      this.getWebms(nextProps.title);
+      this.getWebmList(nextProps.title);
     });
   }
 
-  getWebms = (tagName) => {
+  getWebmList = (tagName) => {
     this.setState({
       isLoading: true,
     });
 
     this.context.fetch(`/graphql?query={
-      getWebms(
+      getWebmList(
         tagName: ${this.props.withoutTag ? null : `"${tagName.toLowerCase()}"`},
         order: ${this.state.order},
         pageSize: ${this.state.pageSize},
@@ -77,8 +77,8 @@ class WebmList extends React.Component {
     }`).then(response => response.json()).then((data) => {
       this.setState({
         page: this.state.page + 1,
-        webms: this.state.webms.concat(data.data.getWebms),
-        hasMore: data.data.getWebms.length > 0,
+        webms: this.state.webms.concat(data.data.getWebmList),
+        hasMore: data.data.getWebmList.length > 0,
         isLoading: false,
       });
     });
@@ -91,7 +91,7 @@ class WebmList extends React.Component {
       hasMore: true,
       order: value,
     }, () => {
-      this.getWebms(this.props.title);
+      this.getWebmList(this.props.title);
     });
   }
 
@@ -131,9 +131,9 @@ class WebmList extends React.Component {
             this.state.webms ?
               <InfiniteScroll
                 className={s.webmInfiniteScroll}
-                loadMore={() => this.getWebms(this.props.title)}
+                loadMore={() => this.getWebmList(this.props.title)}
                 hasMore={this.state.hasMore}
-                threshold={196}
+                threshold={1}
                 loader={this.state.isLoading ? <Progress className={s.loader} /> : null}
                 initialLoad={false}
               >
