@@ -39,13 +39,18 @@ class Webm extends React.Component {
   }
 
   getWebm = (id) => {
+    const lastViewed = JSON.parse(localStorage.getItem('lastViewed')) || [];
+
     this.setState({
       isLoading: true,
     });
 
     this.context.fetch(`/graphql?query=
     {
-      getWebm(id: ${id ? `"${id}"` : null}) {
+      getWebm(
+        id: ${id ? `"${id}"` : null},
+        lastViewed: ${JSON.stringify(lastViewed)}
+        ) {
         id,
         source,
         views,
@@ -80,6 +85,15 @@ class Webm extends React.Component {
         isLiked,
         isDisliked,
       }, () => {
+        if (!id && lastViewed.length >= 10) {
+          lastViewed.splice(0, 1);
+        }
+
+        if (!id) {
+          lastViewed.push(this.state.webm.id);
+          localStorage.setItem('lastViewed', JSON.stringify(lastViewed));
+        }
+
         this.videoInput.load();
       });
     });

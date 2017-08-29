@@ -1,4 +1,5 @@
 import {
+  GraphQLList as List,
   GraphQLID as ID,
   GraphQLString as StringType,
 } from 'graphql';
@@ -11,8 +12,9 @@ const getWebm = {
   args: {
     id: { type: ID },
     hash: { type: StringType },
+    lastViewed: { type: new List(ID) },
   },
-  resolve(value, { id, hash }) {
+  resolve(value, { id, hash, lastViewed }) {
     if (id) {
       return Webm.findByPrimary(id).then((webm) => {
         webm.update({
@@ -25,7 +27,10 @@ const getWebm = {
       return Webm.find({ where: { hash } }).then(webm => webm);
     }
 
-    return Webm.find({ order: [sequelize.fn('RANDOM')] }).then((model) => {
+    return Webm.find({
+      where: lastViewed.length > 0 ? { id: { $notIn: lastViewed } } : {},
+      order: [sequelize.fn('RANDOM')],
+    }).then((model) => {
       model.update({
         views: model.views + 1,
       });
