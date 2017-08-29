@@ -39,17 +39,21 @@ class Webm extends React.Component {
   }
 
   getWebm = (id) => {
+    const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
+    const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
     const lastViewed = JSON.parse(localStorage.getItem('lastViewed')) || [];
 
     this.setState({
       isLoading: true,
     });
 
+    const excludedIds = lastViewed.concat(dislikedWebms);
+
     this.context.fetch(`/graphql?query=
     {
       getWebm(
         id: ${id ? `"${id}"` : null},
-        lastViewed: ${JSON.stringify(lastViewed)}
+        excludedIds: ${JSON.stringify(Array.from(new Set(excludedIds)))}
         ) {
         id,
         source,
@@ -65,14 +69,12 @@ class Webm extends React.Component {
       }
     }`,
     ).then(response => response.json()).then((data) => {
-      const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
       let isLiked = false;
 
       if (likedWebms.indexOf(data.data.getWebm.id) !== -1) {
         isLiked = true;
       }
 
-      const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
       let isDisliked = false;
 
       if (dislikedWebms.indexOf(data.data.getWebm.id) !== -1) {

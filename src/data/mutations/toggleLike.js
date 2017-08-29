@@ -15,6 +15,10 @@ const toggleLike = {
   },
   resolve(value, { id, hasLike, hasDislike }) {
     return Webm.findByPrimary(id).then((webm) => {
+      if (!webm) {
+        return null;
+      }
+
       webm.update({
         likes: hasLike ? webm.likes - 1 : webm.likes + 1,
         dislikes: hasDislike ? webm.dislikes - 1 : webm.dislikes,
