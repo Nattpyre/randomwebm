@@ -6,6 +6,9 @@ const config = {
     webmsFolder: 'webms',
     previewsFolder: 'previews',
   },
+
+  previewWidth: 640,
+  previewHeight: 360,
 };
 
 export default config;

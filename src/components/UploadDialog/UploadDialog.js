@@ -100,10 +100,22 @@ class UploadDialog extends React.Component {
       if (eventsFired === 3) {
         video.addEventListener('seeked', () => {
           const canvas = document.createElement('canvas');
+          const previewSize = this.calcPreviewSize(
+            video.videoWidth,
+            video.videoHeight,
+            config.previewWidth,
+            config.previewHeight,
+          );
 
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          canvas.getContext('2d').drawImage(video, 0, 0);
+          canvas.width = config.previewWidth;
+          canvas.height = config.previewHeight;
+
+          canvas.getContext('2d').drawImage(video,
+            (config.previewWidth / 2) - (previewSize.width / 2),
+            (config.previewHeight / 2) - (previewSize.height / 2),
+            previewSize.width,
+            previewSize.height,
+          );
 
           const preview = canvas.toDataURL('image/jpeg');
 
@@ -296,6 +308,12 @@ class UploadDialog extends React.Component {
     this.setState({
       tagsArray: tags,
     });
+  }
+
+  calcPreviewSize = (srcWidth, srcHeight, maxWidth, maxHeight) => {
+    const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+    return { width: srcWidth * ratio, height: srcHeight * ratio };
   }
 
   render() {
