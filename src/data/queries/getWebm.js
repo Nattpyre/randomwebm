@@ -18,6 +18,10 @@ const getWebm = {
   resolve(value, { id, hash, excludedIds = [] }) {
     if (id) {
       return Webm.findByPrimary(id).then((webm) => {
+        if (!webm) {
+          return null;
+        }
+
         webm.update({
           views: webm.views + 1,
         });

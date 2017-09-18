@@ -41,5 +41,17 @@ export default {
         };
       },
     },
+
+    {
+      path: '/favorite',
+      action() {
+        const title = 'Favorite';
+
+        return {
+          title,
+          component: <Layout><WebmList title={title} isFavorite /></Layout>,
+        };
+      },
+    },
   ],
 };

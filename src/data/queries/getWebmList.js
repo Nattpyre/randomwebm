@@ -1,5 +1,6 @@
 import {
   GraphQLList as List,
+  GraphQLID as ID,
   GraphQLString as StringType,
   GraphQLInt as IntegerType,
   GraphQLEnumType as EnumType,
@@ -24,17 +25,25 @@ const getWebmList = {
     order: { type: OrderType },
     pageSize: { type: IntegerType },
     page: { type: IntegerType },
+    likedWebms: { type: new List(ID) },
   },
-  resolve(value, { tagName, order, pageSize, page }) {
-    if (tagName) {
-      return Tag.find({ where: { name: tagName } }).then(tag => tag.getWebms({
-        order: order ? [[order, 'DESC']] : null,
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
-      }));
+  resolve(value, { tagName, order, pageSize, page, likedWebms = [] }) {
+    if (tagName && likedWebms.length === 0) {
+      return Tag.find({ where: { name: tagName } }).then((tag) => {
+        if (!tag) {
+          return [];
+        }
+
+        return tag.getWebms({
+          order: order ? [[order, 'DESC']] : null,
+          offset: (page - 1) * pageSize,
+          limit: pageSize,
+        });
+      });
     }
 
     return Webm.findAll({
+      where: likedWebms.length > 0 ? { id: { $in: likedWebms } } : {},
       order: order ? [[order, 'DESC']] : null,
       offset: (page - 1) * pageSize,
       limit: pageSize,

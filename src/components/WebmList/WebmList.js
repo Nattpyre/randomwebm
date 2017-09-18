@@ -16,6 +16,7 @@ class WebmList extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     withoutTag: PropTypes.bool,
+    isFavorite: PropTypes.bool,
     order: PropTypes.oneOf([
       'createdAt',
       'likes',
@@ -59,12 +60,23 @@ class WebmList extends React.Component {
       isLoading: true,
     });
 
+    const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
+
+    if (this.props.isFavorite && likedWebms.length === 0) {
+      this.setState({
+        isLoading: false,
+      });
+
+      return;
+    }
+
     this.context.fetch(`/graphql?query={
       getWebmList(
-        tagName: ${this.props.withoutTag ? null : `"${tagName.toLowerCase()}"`},
+        tagName: ${this.props.withoutTag || this.props.isFavorite ? null : `"${tagName.toLowerCase()}"`},
         order: ${this.state.order},
         pageSize: ${this.state.pageSize},
-        page: ${this.state.page}
+        page: ${this.state.page},
+        likedWebms: ${JSON.stringify(this.props.isFavorite ? likedWebms : [])}
       ) {
         id,
         originalName,
@@ -128,7 +140,7 @@ class WebmList extends React.Component {
             }
           </div>
           {
-            this.state.webms ?
+            this.state.webms.length > 0 || this.state.isLoading ?
               <InfiniteScroll
                 className={s.webmInfiniteScroll}
                 loadMore={() => this.getWebmList(this.props.title)}
@@ -189,6 +201,7 @@ class WebmList extends React.Component {
 WebmList.defaultProps = {
   title: 'Recent Webms',
   withoutTag: false,
+  isFavorite: false,
   order: 'createdAt',
 };
 

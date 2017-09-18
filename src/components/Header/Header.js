@@ -7,6 +7,7 @@ import UploadIcon from 'material-ui/svg-icons/file/file-upload';
 import RecentIcon from 'material-ui/svg-icons/action/date-range';
 import TopRatedIcon from 'material-ui/svg-icons/action/thumb-up';
 import MostViewedIcon from 'material-ui/svg-icons/image/remove-red-eye';
+import FavoriteIcon from 'material-ui/svg-icons/action/favorite';
 import TagIcon from 'material-ui/svg-icons/action/label-outline';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.css';
@@ -95,6 +96,9 @@ class Header extends React.Component {
           </MenuItem>
           <MenuItem leftIcon={<MostViewedIcon />} onTouchTap={() => this.handleClick('/popular')}>
             Most Viewed
+          </MenuItem>
+          <MenuItem leftIcon={<FavoriteIcon />} onTouchTap={() => this.handleClick('/favorite')}>
+            Favorite
           </MenuItem>
           <Divider />
           <Subheader>Top tags</Subheader>

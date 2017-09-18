@@ -17,7 +17,13 @@ const getTags = {
   },
   resolve(value, { webmId, limit }) {
     if (webmId) {
-      return Webm.findByPrimary(webmId, { limit }).then(webm => webm.getTags());
+      return Webm.findByPrimary(webmId, { limit }).then((webm) => {
+        if (!webm) {
+          return [];
+        }
+
+        return webm.getTags();
+      });
     }
 
     return Tag.findAll({
