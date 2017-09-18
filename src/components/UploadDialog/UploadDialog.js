@@ -38,19 +38,6 @@ class UploadDialog extends React.Component {
   }
 
   componentDidMount = () => {
-    this.context.fetch(`/graphql?query=
-    {
-      getTags {
-        name
-      }
-    }`).then(response => response.json()).then((data) => {
-      const autoCompleteTags = data.data.getTags.map(tag => tag.name);
-
-      this.setState({
-        autoCompleteTags,
-      });
-    });
-
     const credentials = window.App.credentials;
 
     AWS.config.region = config.AWS.region;
@@ -138,6 +125,25 @@ class UploadDialog extends React.Component {
     events.forEach(event => video.addEventListener(event, handler));
 
     video.src = this.state.webm.blob;
+  }
+
+  handleInputFocus = () => {
+    if (this.state.autoCompleteTags.length > 0) {
+      return;
+    }
+
+    this.context.fetch(`/graphql?query=
+    {
+      getTags {
+        name
+      }
+    }`).then(response => response.json()).then((data) => {
+      const autoCompleteTags = data.data.getTags.map(tag => tag.name);
+
+      this.setState({
+        autoCompleteTags,
+      });
+    });
   }
 
   handleDropFiles = (files, rejected) => {
@@ -350,6 +356,7 @@ class UploadDialog extends React.Component {
               <ChipInput
                 value={this.state.tagsArray}
                 dataSource={this.state.autoCompleteTags}
+                onFocus={this.handleInputFocus}
                 onRequestAdd={this.addTag}
                 onRequestDelete={this.deleteTag}
                 floatingLabelText="Tags"
