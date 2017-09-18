@@ -15,7 +15,7 @@ const getWebm = {
     hash: { type: StringType },
     excludedIds: { type: new List(ID) },
   },
-  resolve(value, { id, hash, excludedIds }) {
+  resolve(value, { id, hash, excludedIds = [] }) {
     if (id) {
       return Webm.findByPrimary(id).then((webm) => {
         webm.update({
