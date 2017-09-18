@@ -6,6 +6,7 @@ import DoneIcon from 'material-ui/svg-icons/file/cloud-done';
 import ErrorIcon from 'material-ui/svg-icons/alert/error-outline';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Dropzone.css';
+import config from '../../config.client';
 
 class Dropzone extends React.Component {
   static propTypes = {
@@ -84,7 +85,9 @@ class Dropzone extends React.Component {
         className={s.dropzone}
         onDrop={this.props.handleDropFiles}
         accept="video/webm"
+        maxSize={config.maxFileSize * 1024 * 1024}
         multiple={false}
+        disablePreview
         disableClick
       >
         {dropzoneContent}

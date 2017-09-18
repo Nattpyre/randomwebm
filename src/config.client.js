@@ -7,6 +7,10 @@ const config = {
     previewsFolder: 'previews',
   },
 
+  // In MB
+  maxFileSize: 50,
+
+  // In pixels
   previewWidth: 640,
   previewHeight: 360,
 };

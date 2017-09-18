@@ -145,8 +145,16 @@ class UploadDialog extends React.Component {
     const url = window.URL || window.webkitURL;
 
     if (rejected.length > 0) {
-      this.setState({
-        error: 'Wrong file format.',
+      rejected.forEach((file) => {
+        if (file.type !== 'video/webm') {
+          this.setState({
+            error: 'Wrong file format.',
+          });
+        } else if (file.size > (config.maxFileSize * 1024 * 1024)) {
+          this.setState({
+            error: 'Exceeded maximum file size',
+          });
+        }
       });
 
       return;
