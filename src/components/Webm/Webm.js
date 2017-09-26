@@ -284,7 +284,7 @@ class Webm extends React.Component {
                       this.props.isRandom ?
                         <RaisedButton
                           className={s.webmBtn}
-                          label="Random Webm!"
+                          label="Random Webm"
                           onTouchTap={() => this.getWebm()}
                           disabled={this.state.isLoading}
                           primary

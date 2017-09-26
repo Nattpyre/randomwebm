@@ -57,7 +57,7 @@ class Dropzone extends React.Component {
     } else if (this.props.isUploaded) {
       dropzoneContent = (
         <div className={s.dropzoneWrapper}>
-          <DoneIcon color="#00bcd4" style={{ width: 80, height: 80 }} />
+          <DoneIcon color="#4caf50" style={{ width: 80, height: 80 }} />
           <span>Webm has been uploaded.</span>
           <span>Do you want to upload
             <button type="button" className={s.uploadFileBtn} onClick={() => this.dropzoneInput.open()}>
