@@ -8,7 +8,7 @@ export default {
   // Keep in mind, routes are evaluated in order
   children: [
     require('./random').default,
-    require('./contact').default,
+    require('./about').default,
     require('./list').default,
     require('./login').default,
     require('./register').default,

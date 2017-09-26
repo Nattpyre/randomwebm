@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { AppBar, Divider, Drawer, IconButton, MenuItem, Subheader } from 'material-ui';
 import HomeIcon from 'material-ui/svg-icons/action/home';
-import ContactsIcon from 'material-ui/svg-icons/action/feedback';
+import ContactIcon from 'material-ui/svg-icons/action/feedback';
 import UploadIcon from 'material-ui/svg-icons/file/file-upload';
 import RecentIcon from 'material-ui/svg-icons/action/date-range';
 import TopRatedIcon from 'material-ui/svg-icons/action/thumb-up';
@@ -83,8 +83,8 @@ class Header extends React.Component {
           <MenuItem leftIcon={<HomeIcon />} onTouchTap={() => this.handleClick('/random')}>
             Home
           </MenuItem>
-          <MenuItem leftIcon={<ContactsIcon />} onTouchTap={() => this.handleClick('/contacts')}>
-            Contacts
+          <MenuItem leftIcon={<ContactIcon />} onTouchTap={() => this.handleClick('/about')}>
+            About Us
           </MenuItem>
           <Divider />
           <Subheader>Webms</Subheader>
