@@ -28,6 +28,14 @@ const getWebmList = {
     likedWebms: { type: new List(ID) },
   },
   resolve(value, { tagName, order, pageSize, page, likedWebms = [] }) {
+    let orderBy = null;
+
+    if (order === 'createdAt') {
+      orderBy = [['createdAt', 'DESC']];
+    } else if (order !== null) {
+      orderBy = [[order, 'DESC'], ['createdAt', 'DESC']];
+    }
+
     if (tagName && likedWebms.length === 0) {
       return Tag.find({ where: { name: tagName } }).then((tag) => {
         if (!tag) {
@@ -35,7 +43,7 @@ const getWebmList = {
         }
 
         return tag.getWebms({
-          order: order ? [[order, 'DESC']] : null,
+          order: orderBy,
           offset: (page - 1) * pageSize,
           limit: pageSize,
         });
@@ -44,7 +52,7 @@ const getWebmList = {
 
     return Webm.findAll({
       where: likedWebms.length > 0 ? { id: { $in: likedWebms } } : {},
-      order: order ? [[order, 'DESC']] : null,
+      order: orderBy,
       offset: (page - 1) * pageSize,
       limit: pageSize,
     }).then(results => results);

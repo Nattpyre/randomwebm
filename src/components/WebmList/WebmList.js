@@ -144,7 +144,7 @@ class WebmList extends React.Component {
               <InfiniteScroll
                 className={s.webmInfiniteScroll}
                 loadMore={() => this.getWebmList(this.props.title)}
-                hasMore={this.state.hasMore}
+                hasMore={!this.state.isLoading && this.state.hasMore}
                 threshold={1}
                 loader={this.state.isLoading ? <Progress className={s.loader} /> : null}
                 initialLoad={false}
