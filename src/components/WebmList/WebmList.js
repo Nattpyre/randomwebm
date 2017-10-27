@@ -240,6 +240,7 @@ class WebmList extends React.Component {
                       }
                       onRequestClose={this.closeWebmModal}
                       bodyClassName={s.selectedWebmWrapper}
+                      overlayClassName={s.modalOverlay}
                     >
                       <Webm
                         webm={this.state.selectedWebm}

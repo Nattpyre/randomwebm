@@ -23,3 +23,7 @@
   padding: 20px 0;
   max-width: var(--max-content-width);
 }
+
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}

@@ -348,6 +348,7 @@ class UploadDialog extends React.Component {
         onRequestClose={
           !this.state.error && this.state.inProgress ? null : this.handleClose
         }
+        overlayClassName={s.modalOverlay}
       >
         {
           this.state.webm.blob && !this.state.inProgress ?

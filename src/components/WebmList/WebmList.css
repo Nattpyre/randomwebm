@@ -100,5 +100,9 @@
 .closeButton svg {
   width: 36px !important;
   height: 36px !important;
-  color: #818181 !important;
+  color: #828383 !important;
+}
+
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.8) !important;
 }

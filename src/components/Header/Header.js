@@ -78,6 +78,7 @@ class Header extends React.Component {
           docked={false}
           open={this.state.isLeftMenuOpen}
           onRequestChange={this.toggleLeftMenu}
+          overlayClassName={s.modalOverlay}
         >
           <Subheader>Pages</Subheader>
           <MenuItem leftIcon={<HomeIcon />} onTouchTap={() => this.handleClick('/random')}>
