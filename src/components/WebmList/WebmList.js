@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { GridTile, MenuItem, SelectField } from 'material-ui';
+import { Dialog, GridTile, MenuItem, SelectField, IconButton } from 'material-ui';
 import DateIcon from 'material-ui/svg-icons/action/date-range';
 import Progress from 'material-ui/CircularProgress';
 import ViewsIcon from 'material-ui/svg-icons/image/remove-red-eye';
 import LikeIcon from 'material-ui/svg-icons/action/thumb-up';
 import DislikeIcon from 'material-ui/svg-icons/action/thumb-down';
+import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import InfiniteScroll from 'react-infinite-scroller';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import Webm from '../Webm';
 import s from './WebmList.css';
-import Link from '../Link';
 
 class WebmList extends React.Component {
 
@@ -37,6 +38,7 @@ class WebmList extends React.Component {
       page: 1,
       hasMore: false,
       isLoading: false,
+      selectedWebm: null,
     };
   }
 
@@ -50,6 +52,7 @@ class WebmList extends React.Component {
       page: 1,
       hasMore: false,
       order: nextProps.order,
+      selectedWebm: null,
     }, () => {
       this.getWebmList(nextProps.title);
     });
@@ -107,6 +110,36 @@ class WebmList extends React.Component {
     });
   }
 
+  handleWebmClick = (e, id) => {
+    this.context.fetch(`/graphql?query={
+      getWebm(id: "${id}") {
+        id,
+        source,
+        views,
+        url,
+        likes,
+        dislikes,
+        createdAt,
+        tags {
+          id,
+          name
+        }
+      }
+    }`).then(response => response.json()).then((data) => {
+      this.setState({
+        selectedWebm: data.data.getWebm,
+      });
+    });
+
+    e.preventDefault();
+  }
+
+  closeWebmModal = () => {
+    this.setState({
+      selectedWebm: null,
+    });
+  }
+
   render() {
     return (
       <div className={s.root}>
@@ -141,54 +174,84 @@ class WebmList extends React.Component {
           </div>
           {
             this.state.webms.length > 0 || this.state.isLoading ?
-              <InfiniteScroll
-                className={s.webmInfiniteScroll}
-                loadMore={() => this.getWebmList(this.props.title)}
-                hasMore={!this.state.isLoading && this.state.hasMore}
-                threshold={1}
-                loader={this.state.isLoading ? <Progress className={s.loader} /> : null}
-                initialLoad={false}
-              >
-                {
-                  this.state.webms.map(webm => (
-                    <div key={webm.id} className={s.webmItemWrapper}>
-                      <GridTile
-                        className={s.webmItem}
-                        title={
-                          <div className={s.webmTitle}>
-                            <div>
-                              <DateIcon color="#fff" />
-                              <span>
-                                {webm.createdAt}
-                              </span>
-                            </div>
-                            <div className={s.webmRating}>
+              <div>
+                <InfiniteScroll
+                  className={s.webmInfiniteScroll}
+                  loadMore={() => this.getWebmList(this.props.title)}
+                  hasMore={!this.state.isLoading && this.state.hasMore}
+                  threshold={1}
+                  loader={this.state.isLoading ? <Progress className={s.loader} /> : null}
+                  initialLoad={false}
+                >
+                  {
+                    this.state.webms.map(webm => (
+                      <div key={webm.id} className={s.webmItemWrapper}>
+                        <GridTile
+                          className={s.webmItem}
+                          title={
+                            <div className={s.webmTitle}>
                               <div>
-                                <LikeIcon color="#fff" />
-                                <span>{webm.likes}</span>
+                                <DateIcon color="#fff" />
+                                <span>
+                                  {webm.createdAt}
+                                </span>
                               </div>
-                              <div>
-                                <DislikeIcon color="#fff" />
-                                <span>{webm.dislikes}</span>
+                              <div className={s.webmRating}>
+                                <div>
+                                  <LikeIcon color="#fff" />
+                                  <span>{webm.likes}</span>
+                                </div>
+                                <div>
+                                  <DislikeIcon color="#fff" />
+                                  <span>{webm.dislikes}</span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        }
-                        subtitle={
-                          <span className={s.webmSubtitle}>
+                          }
+                          subtitle={
+                            <span className={s.webmSubtitle}>
                             <ViewsIcon color="#fff" />
-                            {webm.views} views
+                              {webm.views} views
                           </span>
-                        }
-                      >
-                        <Link to={`/webm/${webm.id}`} className={s.previewWrapper}>
-                          <img src={webm.previewUrl} alt={webm.originalName} />
-                        </Link>
-                      </GridTile>
-                    </div>
-                  ))
+                          }
+                        >
+                          <a
+                            href={`/webm/${webm.id}`}
+                            className={s.previewWrapper}
+                            onClick={e => this.handleWebmClick(e, webm.id)}
+                          >
+                            <img src={webm.previewUrl} alt={webm.originalName} />
+                          </a>
+                        </GridTile>
+                      </div>
+                    ))
+                  }
+                </InfiniteScroll>
+                {
+                  this.state.selectedWebm ?
+                    <Dialog
+                      open={!!this.state.selectedWebm}
+                      title={
+                        <div className={s.closeButtonWrapper}>
+                          <IconButton className={s.closeButton} onTouchTap={this.closeWebmModal}>
+                            <CloseIcon />
+                          </IconButton>
+                        </div>
+                      }
+                      onRequestClose={this.closeWebmModal}
+                      bodyClassName={s.selectedWebmWrapper}
+                    >
+                      <Webm
+                        webm={this.state.selectedWebm}
+                        isRandom={false}
+                        isLoading={this.state.isLoading}
+                        isPopup
+                      />
+                    </Dialog>
+                    :
+                    null
                 }
-              </InfiniteScroll>
+              </div>
               :
               <p>No results found.</p>
           }

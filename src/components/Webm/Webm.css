@@ -1,25 +1,28 @@
 @import '../../components/variables.css';
 
-.root {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-.container {
-  margin: 0 auto;
-  padding: 0 0 2em;
-  max-width: var(--max-content-width);
-}
-
 .webmWrapper {
   display: flex;
   flex-direction: column;
   margin-top: 1em;
 }
 
+.webmWrapperPopup {
+  display: flex;
+  flex-direction: column;
+}
+
+.webmProportionsWrapper {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+}
+
 .webm {
-  height: 563px;
-  max-width: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
   background-color: #212121;
 }
 
@@ -28,22 +31,15 @@
   margin-top: 1em;
 }
 
+.webmInfoWrapperPopup {
+  display: flex;
+  margin: 1em 0 0.5em;
+  padding: 0 1em;
+}
+
 .webmInfo {
-  width: 50%;
-}
-
-.webmInfoHeader {
-  padding: 0.5em 0.75em;
-  font-size: 1em;
-  color: white;
-  background-color: #4caf50;
-}
-
-.webmInfoBody {
   display: flex;
   flex-direction: column;
-  padding: 0.5em 0.75em;
-  min-height: 2.5em;
 }
 
 .tagsWrapper {

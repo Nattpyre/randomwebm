@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconButton, RaisedButton, Paper } from 'material-ui';
+import { IconButton, RaisedButton } from 'material-ui';
 import LikeIcon from 'material-ui/svg-icons/action/thumb-up';
 import DislikeIcon from 'material-ui/svg-icons/action/thumb-down';
 import Linkify from 'linkifyjs/react';
@@ -11,8 +11,23 @@ import s from './Webm.css';
 class Webm extends React.Component {
 
   static propTypes = {
-    id: PropTypes.string,
+    webm: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      source: PropTypes.string,
+      views: PropTypes.number.isRequired,
+      url: PropTypes.string.isRequired,
+      likes: PropTypes.number.isRequired,
+      dislikes: PropTypes.number.isRequired,
+      createdAt: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+      })),
+    }).isRequired,
     isRandom: PropTypes.bool,
+    isLoading: PropTypes.bool.isRequired,
+    isPopup: PropTypes.bool,
+    getWebm: PropTypes.func,
   }
 
   static contextTypes = {
@@ -21,84 +36,43 @@ class Webm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.videoInput = null;
+
+    const { isLiked, isDisliked } = this.getWebmRating(this.props.webm.id);
+
     this.state = {
-      webm: null,
-      isLiked: false,
-      isDisliked: false,
-      isLoading: false,
+      webm: this.props.webm,
+      isLiked,
+      isDisliked,
     };
   }
 
-  componentDidMount = () => {
-    this.getWebm(this.props.id);
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    this.getWebm(nextProps.id);
-  }
-
-  getWebm = (id) => {
-    const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
-    const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
-    const lastViewed = JSON.parse(localStorage.getItem('lastViewed')) || [];
+  componentWillReceiveProps(nextProps) {
+    const { isLiked, isDisliked } = this.getWebmRating(nextProps.webm.id);
 
     this.setState({
-      isLoading: true,
+      webm: nextProps.webm,
+      isLiked,
+      isDisliked,
     });
+  }
 
-    const excludedIds = lastViewed.concat(dislikedWebms);
+  getWebmRating = (id) => {
+    const likedWebms = JSON.parse(localStorage.getItem('likedWebms')) || [];
+    const dislikedWebms = JSON.parse(localStorage.getItem('dislikedWebms')) || [];
 
-    this.context.fetch(`/graphql?query=
-    {
-      getWebm(
-        id: ${id ? `"${id}"` : null},
-        excludedIds: ${JSON.stringify(Array.from(new Set(excludedIds)))}
-        ) {
-        id,
-        source,
-        views,
-        url,
-        likes,
-        dislikes,
-        createdAt,
-        tags {
-          id,
-          name
-        }
-      }
-    }`,
-    ).then(response => response.json()).then((data) => {
-      let isLiked = false;
+    let isLiked = false;
 
-      if (likedWebms.indexOf(data.data.getWebm.id) !== -1) {
-        isLiked = true;
-      }
+    if (likedWebms.indexOf(id) !== -1) {
+      isLiked = true;
+    }
 
-      let isDisliked = false;
+    let isDisliked = false;
 
-      if (dislikedWebms.indexOf(data.data.getWebm.id) !== -1) {
-        isDisliked = true;
-      }
+    if (dislikedWebms.indexOf(id) !== -1) {
+      isDisliked = true;
+    }
 
-      this.setState({
-        webm: data.data.getWebm,
-        isLoading: false,
-        isLiked,
-        isDisliked,
-      }, () => {
-        if (!id && lastViewed.length >= 10) {
-          lastViewed.splice(0, 1);
-        }
-
-        if (!id) {
-          lastViewed.push(this.state.webm.id);
-          localStorage.setItem('lastViewed', JSON.stringify(lastViewed));
-        }
-
-        this.videoInput.load();
-      });
-    });
+    return { isLiked, isDisliked };
   }
 
   toggleLike = () => {
@@ -201,103 +175,92 @@ class Webm extends React.Component {
 
   render() {
     return (
-      <div className={s.root}>
-        <div className={s.container}>
-          {
-            this.state.webm ?
-              <div className={s.webmWrapper}>
-                <video
-                  ref={(input) => {
-                    this.videoInput = input;
-                  }}
-                  src={this.state.webm.url}
-                  type="video/webm"
-                  className={s.webm}
-                  controls
-                  autoPlay
-                />
-                <div className={s.webmInfoWrapper}>
-                  <Paper className={s.webmInfo} rounded={false}>
-                    <div className={s.webmInfoHeader}><strong>Information</strong></div>
-                    <div className={s.webmInfoBody}>
-                      <strong>
-                        Uploaded: {this.state.webm.createdAt}
-                      </strong>
+      <div className={this.props.isPopup ? s.webmWrapperPopup : s.webmWrapper}>
+        <div className={s.webmProportionsWrapper}>
+          <video
+            src={this.state.webm.url}
+            type="video/webm"
+            className={s.webm}
+            controls
+            autoPlay
+          />
+        </div>
+        <div className={this.props.isPopup ? s.webmInfoWrapperPopup : s.webmInfoWrapper}>
+          <div>
+            <div className={s.webmInfo}>
+              <strong>
+                Uploaded: {this.state.webm.createdAt}
+              </strong>
+              {
+                this.state.webm.source ?
+                  <strong>
+                    Source: <Linkify options={{ target: { url: '_blank' } }}>{this.state.webm.source}</Linkify>
+                  </strong>
+                  :
+                  null
+              }
+              {
+                this.state.webm.tags.length > 0 ?
+                  <div>
+                    <strong>Tags: </strong>
+                    <div className={s.tagsWrapper}>
                       {
-                        this.state.webm.source ?
-                          <strong>
-                            Source: <Linkify options={{ target: { url: '_blank' } }}>{this.state.webm.source}</Linkify>
-                          </strong>
-                          :
-                          null
-                      }
-                      {
-                        this.state.webm.tags.length > 0 ?
-                          <div>
-                            <strong>Tags: </strong>
-                            <div className={s.tagsWrapper}>
-                              {
-                                this.state.webm.tags.map(tag => (
-                                  <Link key={tag.id} to={`/tag/${tag.name.toLowerCase()}`} className={s.tagItem}>
-                                    {tag.name}
-                                  </Link>
-                                ))
-                              }
-                            </div>
-                          </div>
-                          :
-                          null
+                        this.state.webm.tags.map(tag => (
+                          <Link key={tag.id} to={`/tag/${tag.name.toLowerCase()}`} className={s.tagItem}>
+                            {tag.name}
+                          </Link>
+                        ))
                       }
                     </div>
-                  </Paper>
-                  <div className={s.webmRightBlock}>
-                    <span className={s.webmViews}>{this.state.webm.views} views</span>
-                    <div className={s.webmRatingWrapper}>
-                      <div
-                        className={
-                          this.state.isLiked ? s.ratingBtnWrapperActive : s.ratingBtnWrapper
-                        }
-                      >
-                        <IconButton
-                          className={s.ratingBtn}
-                          onTouchTap={this.toggleLike}
-                        >
-                          <LikeIcon color={this.state.isLiked ? '#000000' : '#767676'} hoverColor="#000000" />
-                        </IconButton>
-                        <span>{this.state.webm.likes}</span>
-                      </div>
-                      <div
-                        className={
-                          this.state.isDisliked ? s.ratingBtnWrapperActive : s.ratingBtnWrapper
-                        }
-                      >
-                        <IconButton
-                          className={s.ratingBtn}
-                          onTouchTap={this.toggleDislike}
-                        >
-                          <DislikeIcon color={this.state.isDisliked ? '#000000' : '#767676'} hoverColor="#000000" />
-                        </IconButton>
-                        <span>{this.state.webm.dislikes}</span>
-                      </div>
-                    </div>
-                    {
-                      this.props.isRandom ?
-                        <RaisedButton
-                          className={s.webmBtn}
-                          label="Random Webm"
-                          onTouchTap={() => this.getWebm()}
-                          disabled={this.state.isLoading}
-                          primary
-                        />
-                        :
-                        null
-                    }
                   </div>
-                </div>
+                  :
+                  null
+              }
+            </div>
+          </div>
+          <div className={s.webmRightBlock}>
+            <span className={s.webmViews}>{this.state.webm.views} views</span>
+            <div className={s.webmRatingWrapper}>
+              <div
+                className={
+                  this.state.isLiked ? s.ratingBtnWrapperActive : s.ratingBtnWrapper
+                }
+              >
+                <IconButton
+                  className={s.ratingBtn}
+                  onTouchTap={this.toggleLike}
+                >
+                  <LikeIcon color={this.state.isLiked ? '#000000' : '#767676'} hoverColor="#000000" />
+                </IconButton>
+                <span>{this.state.webm.likes}</span>
               </div>
-              :
-              null
-          }
+              <div
+                className={
+                  this.state.isDisliked ? s.ratingBtnWrapperActive : s.ratingBtnWrapper
+                }
+              >
+                <IconButton
+                  className={s.ratingBtn}
+                  onTouchTap={this.toggleDislike}
+                >
+                  <DislikeIcon color={this.state.isDisliked ? '#000000' : '#767676'} hoverColor="#000000" />
+                </IconButton>
+                <span>{this.state.webm.dislikes}</span>
+              </div>
+            </div>
+            {
+              this.props.isRandom ?
+                <RaisedButton
+                  className={s.webmBtn}
+                  label="Random Webm"
+                  onTouchTap={() => this.props.getWebm()}
+                  disabled={this.props.isLoading}
+                  primary
+                />
+                :
+                null
+            }
+          </div>
         </div>
       </div>
     );
@@ -305,8 +268,9 @@ class Webm extends React.Component {
 }
 
 Webm.defaultProps = {
-  id: null,
   isRandom: false,
+  getWebm: null,
+  isPopup: false,
 };
 
 export default withStyles(s)(Webm);

@@ -73,3 +73,32 @@
   margin: 1em auto 0;
   text-align: center;
 }
+
+.selectedWebmWrapper {
+  padding: 0 !important;
+  max-height: none !important;
+}
+
+.closeButtonWrapper {
+  padding: 0 !important;
+}
+
+.closeButton {
+  position: absolute !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  right: -40px;
+  top: -40px;
+  padding: 0 !important;
+}
+
+.closeButton:hover svg {
+  color: white !important;
+}
+
+.closeButton svg {
+  width: 36px !important;
+  height: 36px !important;
+  color: #818181 !important;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../../components/Layout';
-import Webm from '../../components/Webm';
+import WebmPage from '../../components/WebmPage';
 
 export default {
 
@@ -8,7 +8,7 @@ export default {
 
   action() {
     return {
-      component: <Layout><Webm isRandom /></Layout>,
+      component: <Layout><WebmPage isRandom /></Layout>,
     };
   },
 

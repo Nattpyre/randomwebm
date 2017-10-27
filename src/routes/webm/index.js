@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../../components/Layout';
-import Webm from '../../components/Webm';
+import WebmPage from '../../components/WebmPage';
 
 export default {
 
@@ -8,7 +8,7 @@ export default {
 
   action(context) {
     return {
-      component: <Layout><Webm id={context.params.id} /></Layout>,
+      component: <Layout><WebmPage id={context.params.id} /></Layout>,
     };
   },
 
