@@ -176,14 +176,16 @@ class Webm extends React.Component {
   render() {
     return (
       <div className={this.props.isPopup ? s.webmWrapperPopup : s.webmWrapper}>
-        <div className={s.webmProportionsWrapper}>
-          <video
-            src={this.state.webm.url}
-            type="video/webm"
-            className={s.webm}
-            controls
-            autoPlay
-          />
+        <div>
+          <div className={s.webmProportionsWrapper}>
+            <video
+              src={this.state.webm.url}
+              type="video/webm"
+              className={s.webm}
+              controls
+              autoPlay
+            />
+          </div>
         </div>
         <div className={this.props.isPopup ? s.webmInfoWrapperPopup : s.webmInfoWrapper}>
           <div>
