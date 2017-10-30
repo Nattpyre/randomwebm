@@ -79,6 +79,10 @@
   max-height: none !important;
 }
 
+.dialog {
+  max-width: var(--max-content-width) !important;
+}
+
 .closeButtonWrapper {
   padding: 0 !important;
 }
@@ -93,7 +97,8 @@
   padding: 0 !important;
 }
 
-.closeButton:hover svg {
+.closeButton:hover svg,
+.closeButton:focus svg {
   color: white !important;
 }
 
@@ -101,6 +106,29 @@
   width: 36px !important;
   height: 36px !important;
   color: #828383 !important;
+}
+
+.navigationArrow {
+  position: absolute !important;
+  width: auto !important;
+  height: auto !important;
+  left: -80px;
+  top: 241px;
+}
+
+.navigationArrowRight {
+  left: auto;
+  right: -80px;
+}
+
+.navigationArrow svg {
+  width: 56px !important;
+  height: 56px !important;
+  color: #828383 !important;
+}
+
+.navigationArrow:hover svg {
+  color: white !important;
 }
 
 .modalOverlay {

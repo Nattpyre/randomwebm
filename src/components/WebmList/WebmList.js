@@ -7,6 +7,8 @@ import ViewsIcon from 'material-ui/svg-icons/image/remove-red-eye';
 import LikeIcon from 'material-ui/svg-icons/action/thumb-up';
 import DislikeIcon from 'material-ui/svg-icons/action/thumb-down';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
+import IconLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
+import IconRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import InfiniteScroll from 'react-infinite-scroller';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Webm from '../Webm';
@@ -39,6 +41,8 @@ class WebmList extends React.Component {
       hasMore: false,
       isLoading: false,
       selectedWebm: null,
+      hasPreviousWebm: false,
+      hasNextWebm: false,
     };
   }
 
@@ -58,7 +62,7 @@ class WebmList extends React.Component {
     });
   }
 
-  getWebmList = (tagName) => {
+  getWebmList = async tagName => new Promise((resolve, reject) => {
     this.setState({
       isLoading: true,
     });
@@ -70,7 +74,7 @@ class WebmList extends React.Component {
         isLoading: false,
       });
 
-      return;
+      return reject();
     }
 
     this.context.fetch(`/graphql?query={
@@ -95,11 +99,13 @@ class WebmList extends React.Component {
         webms: this.state.webms.concat(data.data.getWebmList),
         hasMore: data.data.getWebmList.length > 0,
         isLoading: false,
+      }, () => {
+        resolve(data.data.getWebmList);
       });
     });
-  }
+  })
 
-  handleOrderChange = (e, index, value) => {
+  handleOrderChange = (value) => {
     this.setState({
       webms: [],
       page: 1,
@@ -110,7 +116,7 @@ class WebmList extends React.Component {
     });
   }
 
-  handleWebmClick = (e, id) => {
+  selectWebm = (id) => {
     this.context.fetch(`/graphql?query={
       getWebm(id: "${id}") {
         id,
@@ -125,13 +131,44 @@ class WebmList extends React.Component {
           name
         }
       }
-    }`).then(response => response.json()).then((data) => {
+    }`).then(response => response.json()).then(async (data) => {
+      let hasPreviousWebm = false;
+      let hasNextWebm = false;
+
+      await Promise.all(this.state.webms.map(async (item, index) => {
+        if (item.id === data.data.getWebm.id && index !== 0) {
+          hasPreviousWebm = true;
+        }
+
+        if (item.id === data.data.getWebm.id && index < this.state.webms.length - 1) {
+          hasNextWebm = true;
+        } else if (item.id === data.data.getWebm.id && index === this.state.webms.length - 1) {
+          hasNextWebm = await this.getWebmList(this.props.title).then(webms => webms.length > 0);
+        }
+      }));
+
       this.setState({
         selectedWebm: data.data.getWebm,
+        hasPreviousWebm,
+        hasNextWebm,
       });
     });
+  }
 
-    e.preventDefault();
+  selectPreviousWebm = () => {
+    this.state.webms.forEach((item, index) => {
+      if (item.id === this.state.selectedWebm.id) {
+        this.selectWebm(this.state.webms[index - 1].id);
+      }
+    });
+  }
+
+  selectNextWebm = () => {
+    this.state.webms.forEach((item, index) => {
+      if (item.id === this.state.selectedWebm.id) {
+        this.selectWebm(this.state.webms[index + 1].id);
+      }
+    });
   }
 
   closeWebmModal = () => {
@@ -210,7 +247,7 @@ class WebmList extends React.Component {
                           }
                           subtitle={
                             <span className={s.webmSubtitle}>
-                            <ViewsIcon color="#fff" />
+                              <ViewsIcon color="#fff" />
                               {webm.views} views
                           </span>
                           }
@@ -218,7 +255,10 @@ class WebmList extends React.Component {
                           <a
                             href={`/webm/${webm.id}`}
                             className={s.previewWrapper}
-                            onClick={e => this.handleWebmClick(e, webm.id)}
+                            onClick={(e) => {
+                              this.selectWebm(webm.id);
+                              e.preventDefault();
+                            }}
                           >
                             <img src={webm.previewUrl} alt={webm.originalName} />
                           </a>
@@ -239,15 +279,38 @@ class WebmList extends React.Component {
                         </div>
                       }
                       onRequestClose={this.closeWebmModal}
+                      contentClassName={s.dialog}
                       bodyClassName={s.selectedWebmWrapper}
                       overlayClassName={s.modalOverlay}
                     >
+                      {
+                        this.state.hasPreviousWebm ?
+                          <IconButton
+                            className={s.navigationArrow}
+                            onTouchTap={this.selectPreviousWebm}
+                          >
+                            <IconLeft />
+                          </IconButton>
+                          :
+                          null
+                      }
                       <Webm
                         webm={this.state.selectedWebm}
                         isRandom={false}
                         isLoading={this.state.isLoading}
                         isPopup
                       />
+                      {
+                        this.state.hasNextWebm ?
+                          <IconButton
+                            className={`${s.navigationArrow} ${s.navigationArrowRight}`}
+                            onTouchTap={this.selectNextWebm}
+                          >
+                            <IconRight />
+                          </IconButton>
+                          :
+                          null
+                      }
                     </Dialog>
                     :
                     null
