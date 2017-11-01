@@ -222,7 +222,7 @@ class WebmList extends React.Component {
                 >
                   {
                     this.state.webms.map(webm => (
-                      <div key={webm.id} className={s.webmItemWrapper}>
+                      <div key={webm.id} className={s.webmItemWrapper} data-loaded={false}>
                         <GridTile
                           className={s.webmItem}
                           title={
@@ -260,7 +260,13 @@ class WebmList extends React.Component {
                               e.preventDefault();
                             }}
                           >
-                            <img src={webm.previewUrl} alt={webm.originalName} />
+                            <img
+                              src={webm.previewUrl}
+                              alt={webm.originalName}
+                              onLoad={(e) => {
+                                e.target.closest('[data-loaded="false"]').setAttribute('data-loaded', 'true');
+                              }}
+                            />
                           </a>
                         </GridTile>
                       </div>
