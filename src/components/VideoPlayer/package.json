@@ -1,0 +1,6 @@
+{
+  "name": "VideoPlayer",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./VideoPlayer.js"
+}

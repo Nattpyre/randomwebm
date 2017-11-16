@@ -6,6 +6,7 @@ import DislikeIcon from 'material-ui/svg-icons/action/thumb-down';
 import Linkify from 'linkifyjs/react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Link from '../../components/Link';
+import VideoPlayer from '../../components/VideoPlayer';
 import s from './Webm.css';
 
 class Webm extends React.Component {
@@ -176,17 +177,7 @@ class Webm extends React.Component {
   render() {
     return (
       <div className={this.props.isPopup ? s.webmWrapperPopup : s.webmWrapper}>
-        <div>
-          <div className={s.webmProportionsWrapper}>
-            <video
-              src={this.state.webm.url}
-              type="video/webm"
-              className={s.webm}
-              controls
-              autoPlay
-            />
-          </div>
-        </div>
+        <VideoPlayer source={this.state.webm.url} />
         <div className={this.props.isPopup ? s.webmInfoWrapperPopup : s.webmInfoWrapper}>
           <div>
             <div className={s.webmInfo}>
