@@ -1,8 +1,15 @@
 .videoProportionsWrapper {
   position: relative;
+  width: 100%;
   overflow: hidden;
   padding-bottom: 56.25%;
   z-index: 0;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .videoProportionsWrapper {
+    height: 100%;
+  }
 }
 
 .video {
@@ -11,7 +18,7 @@
   height: 100%;
   top: 0;
   left: 0;
-  background-color: #212121;
+  background-color: black;
 }
 
 .video:hover ~ .videoControls,

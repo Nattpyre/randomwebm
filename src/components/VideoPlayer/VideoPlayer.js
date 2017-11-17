@@ -20,10 +20,10 @@ class VideoPlayer extends React.Component {
   constructor(props) {
     super(props);
 
-    const volume = +localStorage.getItem('volumeLevel');
+    const volume = localStorage.getItem('volumeLevel');
 
+    this.wrapper = null;
     this.video = null;
-    this.videoControls = null;
     this.timer = 0;
     this.fullScreenTimer = 0;
     this.clicks = 0;
@@ -31,7 +31,7 @@ class VideoPlayer extends React.Component {
       isPaused: false,
       isInFullScreen: false,
       isLoading: true,
-      volume: isNaN(volume) ? 1 : volume,
+      volume: volume === null ? 1 : volume,
       clicks: 0,
       currentTime: 0,
       duration: 0,
@@ -133,7 +133,7 @@ class VideoPlayer extends React.Component {
   }
 
   toggleFullScreen = () => {
-    const elem = this.video;
+    const elem = this.wrapper;
     const isInFullScreen = !!document.fullscreenElement ||
       !!document.mozFullScreenElement ||
       !!document.webkitFullscreenElement;
@@ -191,7 +191,12 @@ class VideoPlayer extends React.Component {
 
     return (
       <div>
-        <div className={s.videoProportionsWrapper}>
+        <div
+          ref={(input) => {
+            this.wrapper = input;
+          }}
+          className={s.videoProportionsWrapper}
+        >
           <video
             ref={(input) => {
               this.video = input;
@@ -222,9 +227,6 @@ class VideoPlayer extends React.Component {
             this.state.isLoading ? <CircularProgress className={s.videoLoading} /> : null
           }
           <div
-            ref={(input) => {
-              this.videoControls = input;
-            }}
             className={s.videoControls}
           >
             <LinearProgress
