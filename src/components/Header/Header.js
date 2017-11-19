@@ -48,12 +48,16 @@ class Header extends React.Component {
   toggleLeftMenu = () => {
     this.setState({
       isLeftMenuOpen: !this.state.isLeftMenuOpen,
+    }, () => {
+      document.body.classList.toggle('modal-open');
     });
   }
 
   toggleUploadDialog = () => {
     this.setState({
       isUploadDialogOpen: !this.state.isUploadDialogOpen,
+    }, () => {
+      document.body.classList.toggle('modal-open');
     });
   }
 

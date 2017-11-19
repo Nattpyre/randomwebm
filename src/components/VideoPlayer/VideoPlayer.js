@@ -193,6 +193,10 @@ class VideoPlayer extends React.Component {
   addHotKeys = (e) => {
     const keyCode = e.which || e.charCode;
 
+    if (document.body.classList.contains('modal-open')) {
+      return;
+    }
+
     if (keyCode === 32 || keyCode === 75) {
       this.togglePause();
     } else if (keyCode === 70) {
