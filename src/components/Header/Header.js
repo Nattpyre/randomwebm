@@ -63,7 +63,7 @@ class Header extends React.Component {
 
   handleClick = (route) => {
     history.push(route);
-    this.setState({ isLeftMenuOpen: false });
+    this.setState({ isLeftMenuOpen: false }, () => document.body.classList.toggle('modal-open'));
   }
 
   render() {
