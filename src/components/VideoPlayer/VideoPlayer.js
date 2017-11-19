@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconButton, Slider, LinearProgress, CircularProgress } from 'material-ui';
 import PlayIcon from 'material-ui/svg-icons/av/play-arrow';
 import PauseIcon from 'material-ui/svg-icons/av/pause';
+import ReplayIcon from 'material-ui/svg-icons/av/replay';
 import EnterFullScreenIcon from 'material-ui/svg-icons/navigation/fullscreen';
 import ExitFullScreenIcon from 'material-ui/svg-icons/navigation/fullscreen-exit';
 import VolumeUpIcon from 'material-ui/svg-icons/av/volume-up';
@@ -31,7 +32,7 @@ class VideoPlayer extends React.Component {
       isPaused: false,
       isInFullScreen: false,
       isLoading: true,
-      volume: volume === null ? 1 : volume,
+      volume: volume === null ? 1 : +volume,
       clicks: 0,
       currentTime: 0,
       duration: 0,
@@ -41,6 +42,8 @@ class VideoPlayer extends React.Component {
 
   componentDidMount() {
     this.video.volume = this.state.volume;
+
+    document.addEventListener('keydown', this.addHotKeys);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -50,6 +53,10 @@ class VideoPlayer extends React.Component {
         isInFullScreen: false,
       });
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.addHotKeys);
   }
 
   handleVideoClick = () => {
@@ -95,20 +102,36 @@ class VideoPlayer extends React.Component {
   }
 
   volumeSliderChange = (e, newValue) => {
+    let volume = +newValue;
+
+    if (volume < 0) {
+      volume = 0;
+    } else if (volume > 1) {
+      volume = 1;
+    }
+
     this.setState({
-      volume: newValue,
+      volume,
     }, () => {
-      localStorage.setItem('volumeLevel', newValue);
-      this.video.volume = newValue;
+      localStorage.setItem('volumeLevel', volume);
+      this.video.volume = volume;
     });
   }
 
   videoProgressChange = (e, newValue) => {
+    let currentTime = +newValue;
+
+    if (currentTime < 0) {
+      currentTime = 0;
+    } else if (currentTime > this.state.duration) {
+      currentTime = this.state.duration;
+    }
+
     this.setState({
-      currentTime: newValue,
+      currentTime,
       isPaused: false,
     }, () => {
-      this.video.currentTime = newValue;
+      this.video.currentTime = currentTime;
 
       if (this.video.paused) {
         this.video.play();
@@ -167,6 +190,30 @@ class VideoPlayer extends React.Component {
     });
   }
 
+  addHotKeys = (e) => {
+    const keyCode = e.which || e.charCode;
+
+    if (keyCode === 32 || keyCode === 75) {
+      this.togglePause();
+    } else if (keyCode === 70) {
+      this.toggleFullScreen();
+    } else if (keyCode === 74) {
+      this.videoProgressChange(null, this.state.currentTime - 10);
+    } else if (keyCode === 76) {
+      this.videoProgressChange(null, this.state.currentTime + 10);
+    } else if (keyCode === 37) {
+      this.videoProgressChange(null, this.state.currentTime - 5);
+    } else if (keyCode === 39) {
+      this.videoProgressChange(null, this.state.currentTime + 5);
+    } else if (keyCode === 38) {
+      this.volumeSliderChange(null, this.state.volume + 0.05);
+    } else if (keyCode === 40) {
+      this.volumeSliderChange(null, this.state.volume - 0.05);
+    } else if (keyCode === 77) {
+      this.toggleVolume();
+    }
+  }
+
   formatTime = (secs) => {
     const time = Math.floor(secs);
     const seconds = Math.floor(time % 60);
@@ -182,11 +229,21 @@ class VideoPlayer extends React.Component {
 
   render() {
     let volumeIcon = <VolumeUpIcon />;
+    let playIcon = <PauseIcon />;
+    let playStatus = 'Pause';
 
     if (this.state.volume === 0) {
       volumeIcon = <VolumeOffIcon />;
     } else if (this.state.volume < 0.5) {
       volumeIcon = <VolumeDownIcon />;
+    }
+
+    if (this.state.isPaused && this.state.currentTime >= this.state.duration) {
+      playIcon = <ReplayIcon />;
+      playStatus = 'Replay';
+    } else if (this.state.isPaused) {
+      playIcon = <PlayIcon />;
+      playStatus = 'Play';
     }
 
     return (
@@ -211,7 +268,7 @@ class VideoPlayer extends React.Component {
               duration: this.video.duration,
             })}
             onTimeUpdate={() => this.setState({
-              currentTime: this.video.currentTime,
+              currentTime: +this.video.currentTime,
             })}
             onPlaying={() => this.setState({
               isLoading: false,
@@ -220,7 +277,10 @@ class VideoPlayer extends React.Component {
               isLoading: true,
             })}
             onProgress={this.handleVideoDownload}
-            onEnded={() => this.setState({ isPaused: true })}
+            onEnded={() => this.setState({
+              isPaused: true,
+              isLoading: false,
+            })}
             autoPlay
           />
           {
@@ -229,29 +289,30 @@ class VideoPlayer extends React.Component {
           <div
             className={s.videoControls}
           >
-            <LinearProgress
-              className={s.downloadingProgress}
-              mode="determinate"
-              value={this.state.buffered}
-              max={this.state.duration}
-            />
-            <Slider
-              className={s.playingProgress}
-              value={this.state.currentTime}
-              max={this.state.duration || 1}
-              onChange={this.videoProgressChange}
-              disableFocusRipple
-            />
+            <div className={s.progressWrapper}>
+              <LinearProgress
+                className={s.downloadingProgress}
+                mode="determinate"
+                value={this.state.buffered}
+                max={this.state.duration}
+              />
+              <Slider
+                className={s.playingProgress}
+                value={this.state.currentTime}
+                max={this.state.duration || 1}
+                onChange={this.videoProgressChange}
+                disableFocusRipple
+              />
+            </div>
             <IconButton
-              tooltip={this.state.isPaused ? 'Play' : 'Pause'}
+              tooltip={playStatus}
               tooltipPosition="top-center"
               onTouchTap={this.togglePause}
             >
-              {
-                this.state.isPaused ? <PlayIcon /> : <PauseIcon />
-              }
+              {playIcon}
             </IconButton>
             <IconButton
+              className={s.toggleVolumeBtn}
               tooltip={this.state.volume > 0 ? 'Disable sound' : 'Enable sound'}
               tooltipPosition="top-center"
               onTouchTap={this.toggleVolume}

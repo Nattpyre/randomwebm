@@ -88,9 +88,25 @@
   margin-left: auto !important;
 }
 
-.volumeSlider {
+.toggleVolumeBtn:hover ~ .volumeSlider,
+.volumeSlider:hover {
   width: 52px;
+}
+
+.toggleVolumeBtn:hover ~ .videoTimers,
+.volumeSlider:hover ~ .videoTimers {
+  margin-left: 10px;
+}
+
+.toggleVolumeBtn:hover ~ .volumeSlider > div > div > div:last-of-type,
+.volumeSlider:hover > div > div > div:last-of-type {
+  display: block;
+}
+
+.volumeSlider {
+  width: 0;
   margin: 0 5px;
+  transition: width 0.2s;
 }
 
 .volumeSlider > div {
@@ -106,18 +122,33 @@
   background-color: white !important;
 }
 
+.volumeSlider > div > div > div:last-of-type {
+  display: none;
+}
+
 .videoTimers {
-  margin-left: 10px;
   color: white;
+}
+
+.progressWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 44px;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
 
 .downloadingProgress,
 .playingProgress {
-  position: absolute !important;
-  left: 0;
-  bottom: 52px;
-  width: 100%;
   background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.downloadingProgress {
+  top: 11px;
 }
 
 .downloadingProgress > div {
@@ -125,7 +156,9 @@
 }
 
 .playingProgress {
-  bottom: 46px !important;
+  position: relative;
+  width: 100%;
+  bottom: 1px !important;
   background-color: transparent !important;
 }
 
