@@ -196,7 +196,7 @@ class WebmList extends React.Component {
                   value={this.state.order}
                   id="list-order"
                   className={s.listOrder}
-                  onChange={this.handleOrderChange}
+                  onChange={(e, key, value) => this.handleOrderChange(value)}
                   floatingLabelText="Order By"
                 >
                   <MenuItem
