@@ -193,7 +193,7 @@ class VideoPlayer extends React.Component {
   addHotKeys = (e) => {
     const keyCode = e.which || e.charCode;
 
-    if (document.body.classList.contains('modal-open')) {
+    if (document.body.classList.contains('modal-open') || document.body.classList.contains('disable-hotkeys')) {
       return;
     }
 

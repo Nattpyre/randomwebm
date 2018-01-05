@@ -1,27 +1,37 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
-@import '../variables.css';
-
-:root {
-  --brand-color: #61dafb;
+.appBar {
+  height: 64px !important;
+  background-color: #4caf50 !important;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
-.root {
-  background: #373277;
-  color: #fff;
+.appBar svg {
+  color: white !important;
 }
 
-.container {
-  margin: 0 auto;
-  padding: 20px 0;
-  max-width: var(--max-content-width);
+.menuBtn {
+  margin: 0 8px !important;
+}
+
+.uploadBtn {
+  margin-right: 8px !important;
+}
+
+.appBarTitle {
+  font-size: 24px !important;
+  color: white !important;
+  font-weight: normal;
+}
+
+.searchInputWrapper > div {
+  color: white !important;
+}
+
+.searchInputWrapper input {
+  color: white !important;
+}
+
+.searchInputWrapper hr {
+  display: none !important;
 }
 
 .modalOverlay {
