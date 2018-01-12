@@ -193,6 +193,7 @@ class Header extends React.Component {
                 opacity: +this.state.isSearchOpen,
                 transition: 'all 0.2s ease-in-out',
               }}
+              filter={(searchText, key) => searchText !== '' && key.toLowerCase().indexOf(searchText.toLowerCase()) !== -1}
               onFocus={this.handleSearchFocus}
               onBlur={() => {
                 document.body.classList.remove('disable-hotkeys');

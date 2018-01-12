@@ -139,19 +139,14 @@ class VideoPlayer extends React.Component {
     });
   }
 
-  handleFullScreenMove = () => {
-    if (!document.fullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement) {
-      this.video.classList.remove(s.controlsHidden);
-      return;
-    }
-
+  handleMouseMove = () => {
     clearTimeout(this.fullScreenTimer);
     this.video.classList.remove(s.controlsHidden);
 
     this.fullScreenTimer = setTimeout(() => {
-      this.video.classList.add(s.controlsHidden);
+      if (this.video) {
+        this.video.classList.add(s.controlsHidden);
+      }
     }, 3000);
   }
 
@@ -267,7 +262,7 @@ class VideoPlayer extends React.Component {
             className={`${s.video} ${this.state.isPaused ? s.paused : ''}`}
             onClick={this.handleVideoClick}
             onDoubleClick={this.toggleFullScreen}
-            onMouseMove={this.handleFullScreenMove}
+            onMouseMove={this.handleMouseMove}
             onLoadedMetadata={() => this.setState({
               duration: this.video.duration,
             })}
