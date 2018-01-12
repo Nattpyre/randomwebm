@@ -32,6 +32,7 @@
 
 .video.controlsHidden:not(.paused) ~ .videoControls {
   opacity: 0;
+  cursor: none;
 }
 
 :-webkit-full-screen .video {

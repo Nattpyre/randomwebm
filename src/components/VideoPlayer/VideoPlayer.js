@@ -287,6 +287,7 @@ class VideoPlayer extends React.Component {
           }
           <div
             className={s.videoControls}
+            onMouseMove={this.handleMouseMove}
           >
             <div className={s.progressWrapper}>
               <LinearProgress
