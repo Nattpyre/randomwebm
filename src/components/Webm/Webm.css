@@ -13,7 +13,9 @@
 
 .webmInfoWrapper {
   display: flex;
+  position: relative;
   margin-top: 1em;
+  z-index: 0;
 }
 
 .webmInfoWrapperPopup {
