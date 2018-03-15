@@ -1,2 +1,2 @@
 worker: npm run migrate
-web: npm start -- --release
+web: node build/server.js
