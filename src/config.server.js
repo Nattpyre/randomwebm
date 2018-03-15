@@ -1,13 +1,5 @@
-const s3 = require('./s3.json');
-
-/* eslint-disable max-len */
-
 if (process.env.BROWSER) {
   throw new Error('Do not import `config.js` from inside the client-side code.');
-}
-
-if (!Object.keys(s3).length) {
-  throw new Error('Cannot find s3 credentials file in source folder.');
 }
 
 module.exports = {
@@ -23,7 +15,18 @@ module.exports = {
   },
 
   // Database
-  databaseUrl: process.env.DATABASE_URL || 'postgresql://localhost/randomwebm',
+  databaseUrl: process.env.DATABASE_URL,
+
+  // Authentication
+  auth: {
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expires: 60 * 60 * 24 * 180, // 180 days
+    },
+  },
+
+  // User roles
+  userRoles: ['moderator', 'administrator'],
 
   // Web analytics
   analytics: {
@@ -33,9 +36,9 @@ module.exports = {
 
   // Amazon AWS
   AWS: {
-    region: process.env.AWS_REGION || 'eu-central-1',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || s3.accessKeyId,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || s3.secretAccessKey,
-    tokenDuration: process.env.AWS_TOKEN_DURATION || 43200,
+    region: process.env.S3_REGION,
+    accessKeyId: process.env.S3_KEY,
+    secretAccessKey: process.env.S3_SECRET,
+    tokenDuration: process.env.S3_TOKEN_DURATION,
   },
 };

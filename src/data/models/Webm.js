@@ -75,6 +75,15 @@ const Webm = Model.define('Webm', {
     },
   },
 
+  isChecked: {
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+    validate: {
+      notEmpty: true,
+    },
+  },
+
 }, {
 
   indexes: [

@@ -7,3 +7,4 @@ coverage
 .nyc_output
 yarn.lock
 src/s3.json
+.env

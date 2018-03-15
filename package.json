@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "node": "6.5",
-    "npm": "3.10"
+    "node": "<=6.5",
+    "npm": "<=3.10"
   },
   "browserslist": [
     ">1%",
@@ -22,13 +22,13 @@
     "core-js": "^2.4.1",
     "express": "^4.15.2",
     "express-graphql": "^0.6.4",
-    "express-jwt": "^5.3.0",
+    "express-jwt": "^5.3.1",
     "fastclick": "^1.0.6",
     "graphql": "^0.9.3",
     "history": "^4.6.1",
     "isomorphic-fetch": "^2.2.1",
     "isomorphic-style-loader": "^2.0.0",
-    "jsonwebtoken": "^7.3.0",
+    "jsonwebtoken": "^8.2.0",
     "linkifyjs": "^2.1.4",
     "material-ui": "^0.18.1",
     "material-ui-chip-input": "^0.16.1",
@@ -42,7 +42,8 @@
     "react-dropzone": "^3.13.2",
     "react-infinite-scroller": "^1.0.15",
     "react-tap-event-plugin": "^2.0.1",
-    "sequelize": "^3.30.4",
+    "sequelize": "^4.36.1",
+    "sequelize-cli": "^4.0.0",
     "serialize-javascript": "^1.3.0",
     "source-map-support": "^0.4.14",
     "spark-md5": "^3.0.0",
@@ -171,6 +172,6 @@
     "render": "babel-node tools/run render",
     "serve": "babel-node tools/run runServer",
     "start": "babel-node tools/run start",
-    "data": "babel-node tools/data"
+    "migrate": "babel-node tools/run migrate"
   }
 }

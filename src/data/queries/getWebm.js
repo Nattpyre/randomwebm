@@ -2,6 +2,7 @@ import {
   GraphQLList as List,
   GraphQLID as ID,
   GraphQLString as StringType,
+  GraphQLBoolean as BooleanType,
 } from 'graphql';
 import sequelize from '../sequelize';
 import WebmType from '../types/WebmType';
@@ -13,11 +14,14 @@ const getWebm = {
   args: {
     id: { type: ID },
     hash: { type: StringType },
+    isChecked: { type: BooleanType },
     excludedIds: { type: new List(ID) },
   },
-  resolve(value, { id, hash, excludedIds = [] }) {
+  resolve(value, { id, hash, isChecked = true, excludedIds = [] }) {
     if (id) {
-      return Webm.findByPrimary(id).then((webm) => {
+      const params = isChecked ? { id } : { id, isChecked: false };
+
+      return Webm.findOne({ where: params }).then((webm) => {
         if (!webm) {
           return null;
         }
@@ -29,11 +33,14 @@ const getWebm = {
         return webm;
       });
     } else if (hash) {
-      return Webm.find({ where: { hash } }).then(webm => webm);
+      return Webm.find({ where: { hash, isChecked: true } }).then(webm => webm);
+    } else if (!isChecked) {
+      return Webm.find({ where: { isChecked: false } }).then(webm => webm);
     }
 
     return Webm.find({
-      where: excludedIds.length > 0 ? { id: { $notIn: excludedIds } } : {},
+      where: excludedIds.length > 0 ?
+        { id: { $notIn: excludedIds }, isChecked: true } : { isChecked: true },
       order: [sequelize.fn('RANDOM')],
     }).then((model) => {
       if (!model) {

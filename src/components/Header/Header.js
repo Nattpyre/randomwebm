@@ -196,7 +196,11 @@ class Header extends React.Component {
               filter={(searchText, key) => searchText !== '' && key.toLowerCase().indexOf(searchText.toLowerCase()) !== -1}
               onFocus={this.handleSearchFocus}
               onBlur={() => {
-                document.body.classList.remove('disable-hotkeys');
+                this.setState({
+                  isSearchOpen: false,
+                }, () => {
+                  document.body.classList.remove('disable-hotkeys');
+                });
               }}
               onNewRequest={(value) => {
                 history.push(`/tag/${value.toLowerCase()}`);

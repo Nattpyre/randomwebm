@@ -1,8 +1,8 @@
 const config = {
   // AWS S3 configuration
   AWS: {
-    bucket: 'randomwebm',
-    region: 'eu-central-1',
+    bucket: process.env.S3_BUCKET,
+    region: process.env.S3_REGION,
     webmsFolder: 'webms',
     previewsFolder: 'previews',
   },

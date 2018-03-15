@@ -30,6 +30,7 @@ const context = {
   fetch: createFetch({
     baseUrl: window.App.apiUrl,
   }),
+  user: window.App.user,
 };
 
 // Switch off the native scroll restoration behavior and handle it manually

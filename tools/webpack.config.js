@@ -206,6 +206,8 @@ const clientConfig = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       'process.env.BROWSER': true,
+      'process.env.S3_REGION': `'${process.env.S3_REGION}'`,
+      'process.env.S3_BUCKET': `'${process.env.S3_BUCKET}'`,
       __DEV__: isDebug,
     }),
 

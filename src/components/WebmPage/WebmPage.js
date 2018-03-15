@@ -70,7 +70,7 @@ class WebmPage extends React.Component {
           lastViewed.splice(0, 1);
         }
 
-        if (!id) {
+        if (!id && this.state.webm) {
           lastViewed.push(this.state.webm.id);
           localStorage.setItem('lastViewed', JSON.stringify(lastViewed));
         }

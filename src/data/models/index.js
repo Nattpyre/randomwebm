@@ -30,4 +30,3 @@ function sync(...args) {
 }
 
 export default { sync };
-export { Webm };

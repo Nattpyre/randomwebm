@@ -43,6 +43,7 @@ const getWebmList = {
         }
 
         return tag.getWebms({
+          where: { isChecked: true },
           order: orderBy,
           offset: (page - 1) * pageSize,
           limit: pageSize,
@@ -51,7 +52,8 @@ const getWebmList = {
     }
 
     return Webm.findAll({
-      where: likedWebms.length > 0 ? { id: { $in: likedWebms } } : {},
+      where: likedWebms.length > 0 ?
+        { id: { $in: likedWebms }, isChecked: true } : { isChecked: true },
       order: orderBy,
       offset: (page - 1) * pageSize,
       limit: pageSize,

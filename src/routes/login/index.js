@@ -17,7 +17,11 @@ export default {
 
   path: '/login',
 
-  action() {
+  action(req) {
+    if (req.user && req.user.roles.indexOf('administrator') !== -1) {
+      return { redirect: '/admin' };
+    }
+
     return {
       title,
       component: <Layout><Login title={title} /></Layout>,

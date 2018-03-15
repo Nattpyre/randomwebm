@@ -21,7 +21,7 @@ class VideoPlayer extends React.Component {
   constructor(props) {
     super(props);
 
-    const volume = localStorage.getItem('volumeLevel');
+    const volume = typeof localStorage !== 'undefined' ? localStorage.getItem('volumeLevel') : 1;
 
     this.wrapper = null;
     this.video = null;

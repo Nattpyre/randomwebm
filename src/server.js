@@ -11,9 +11,11 @@ import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import expressGraphQL from 'express-graphql';
+import jwt from 'jsonwebtoken';
 import React from 'react';
-import ReactDOM from 'react-dom/server'
+import ReactDOM from 'react-dom/server';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import PrettyError from 'pretty-error';
 import App from './components/App';
@@ -53,12 +55,45 @@ if (__DEV__) {
 }
 
 //
+// Authentication
+// -----------------------------------------------------------------------------
+app.use(
+  expressJwt({
+    secret: config.auth.jwt.secret,
+    credentialsRequired: false,
+    getToken: req => req.cookies.id_token,
+  }),
+);
+
+// Error handler for express-jwt
+app.use((err, req, res, next) => {
+  const token = req.cookies.id_token;
+
+  if (token) {
+    try {
+      req.user = jwt.verify(token, config.auth.jwt.secret); // eslint-disable-line no-param-reassign
+    } catch (e) {
+      res.clearCookie('id_token');
+    }
+  }
+
+  // eslint-disable-line no-unused-vars
+  if (err instanceof Jwt401Error) {
+    console.error('[express-jwt-error]', req.cookies.id_token);
+    // `clearCookie`, otherwise user can't use web-app until cookie expires
+    res.clearCookie('id_token');
+  }
+
+  next(err);
+});
+
+//
 // Register API middleware
 // -----------------------------------------------------------------------------
-app.use('/graphql', expressGraphQL(req => ({
+app.use('/graphql', expressGraphQL((req, res) => ({
   schema,
   graphiql: __DEV__,
-  rootValue: { request: req },
+  rootValue: { request: req, response: res },
   pretty: __DEV__,
 })));
 
@@ -68,6 +103,8 @@ app.use('/graphql', expressGraphQL(req => ({
 app.get('*', async (req, res, next) => {
   try {
     const css = new Set();
+    const token = req.cookies.id_token;
+    const user = token ? jwt.verify(token, config.auth.jwt.secret) : token;
 
     // Get temporary AWS credentials
     const credentials = await getCredentials();
@@ -87,6 +124,7 @@ app.get('*', async (req, res, next) => {
         cookie: req.headers.cookie,
       }),
       userAgent: req.headers['user-agent'],
+      user,
     };
 
     const route = await router.resolve({
@@ -115,6 +153,10 @@ app.get('*', async (req, res, next) => {
     data.app = {
       apiUrl: config.api.clientUrl,
       credentials,
+      user: user ? {
+        id: user.id,
+        roles: user.roles,
+      } : null,
     };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
@@ -140,7 +182,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
       description={err.message}
       styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
     >
-      {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
+    {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
     </Html>,
   );
   res.status(err.status || 500);

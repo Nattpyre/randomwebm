@@ -33,6 +33,8 @@ class WebmList extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.isAdmin = false;
     this.state = {
       webms: [],
       order: this.props.order,
@@ -47,6 +49,10 @@ class WebmList extends React.Component {
   }
 
   componentDidMount = () => {
+    if (typeof window !== 'undefined' && window.App.user && window.App.user.roles.indexOf('administrator')) {
+      this.isAdmin = true;
+    }
+
     this.getWebmList(this.props.title);
   }
 
@@ -253,7 +259,7 @@ class WebmList extends React.Component {
                           }
                         >
                           <a
-                            href={`/webm/${webm.id}`}
+                            href={`${this.isAdmin ? '/admin' : ''}/webm/${webm.id}`}
                             className={s.previewWrapper}
                             onClick={(e) => {
                               this.selectWebm(webm.id);

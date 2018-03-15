@@ -44,7 +44,7 @@ const WebmType = new ObjectType({
     tags: {
       type: new List(TagType),
       resolve(model) {
-        return Webm.findByPrimary(model.id).then((webm) => webm ? webm.getTags() : []);
+        return Webm.findOne({ where: { id: model.id } }).then((webm) => webm ? webm.getTags() : []);
       },
     },
   },

@@ -11,6 +11,9 @@ import toggleLike from './mutations/toggleLike';
 import toggleDislike from './mutations/toggleDislike';
 import addTag from './mutations/addTag';
 import deleteTag from './mutations/deleteTag';
+import userLogin from './mutations/userLogin';
+import confirmWebm from './mutations/confirmWebm';
+import removeWebm from './mutations/removeWebm';
 
 const schema = new Schema({
   query: new ObjectType({
@@ -29,6 +32,9 @@ const schema = new Schema({
       toggleDislike,
       addTag,
       deleteTag,
+      userLogin,
+      confirmWebm,
+      removeWebm,
     },
   }),
 });

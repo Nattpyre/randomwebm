@@ -8,6 +8,7 @@ const ContextType = {
   insertCss: PropTypes.func.isRequired,
   fetch: PropTypes.func.isRequired,
   userAgent: PropTypes.string,
+  user: PropTypes.object,
 };
 
 const muiTheme = {
