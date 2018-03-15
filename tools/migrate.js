@@ -8,7 +8,7 @@ const options = {
 };
 
 async function migrate() {
-  await spawn('node_modules/.bin/babel-node node_modules/.bin/sequelize', ['db:migrate', '--url', config.databaseUrl], options);
+  await spawn('node_modules/.bin/babel-node', ['node_modules/.bin/sequelize', 'db:migrate', '--url', process.env.DATABASE_URL], options);
 }
 
 export default migrate;
