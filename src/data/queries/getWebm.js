@@ -33,7 +33,7 @@ const getWebm = {
         return webm;
       });
     } else if (hash) {
-      return Webm.find({ where: { hash, isChecked: true } }).then(webm => webm);
+      return Webm.find({ where: { hash } }).then(webm => webm);
     } else if (!isChecked) {
       return Webm.find({ where: { isChecked: false } }).then(webm => webm);
     }
