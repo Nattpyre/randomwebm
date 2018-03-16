@@ -35,9 +35,22 @@
   padding: 0 1em;
 }
 
+.webmInfoWrapperPopup > div:first-of-type {
+  min-width: 1px;
+}
+
 .webmInfo {
   display: flex;
   flex-direction: column;
+}
+
+@media (--phone) {
+  .webmInfo a {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .tagsWrapper {

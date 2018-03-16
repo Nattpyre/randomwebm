@@ -198,6 +198,6 @@
   transform: translate(-50%, -50%);
 }
 
-.playIcon svg circle {
+.videoIcon svg circle {
   stroke: #ddd !important;
 }
