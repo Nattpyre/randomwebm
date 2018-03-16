@@ -10,6 +10,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import IconLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 import IconRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import InfiniteScroll from 'react-infinite-scroller';
+import Swipeable from 'react-swipeable';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Webm from '../Webm';
 import s from './WebmList.css';
@@ -157,13 +158,16 @@ class WebmList extends React.Component {
         selectedWebm: data.data.getWebm,
         hasPreviousWebm,
         hasNextWebm,
+      }, () => {
+        window.screen.orientation.onchange = this.handleOrientationChange;
+        document.querySelector(`.${s.modalOverlay}`).onclick = this.closeWebmModal;
       });
     });
   }
 
   selectPreviousWebm = () => {
     this.state.webms.forEach((item, index) => {
-      if (item.id === this.state.selectedWebm.id) {
+      if (item.id === this.state.selectedWebm.id && typeof this.state.webms[index - 1] !== 'undefined') {
         this.selectWebm(this.state.webms[index - 1].id);
       }
     });
@@ -171,15 +175,36 @@ class WebmList extends React.Component {
 
   selectNextWebm = () => {
     this.state.webms.forEach((item, index) => {
-      if (item.id === this.state.selectedWebm.id) {
+      if (item.id === this.state.selectedWebm.id && typeof this.state.webms[index + 1] !== 'undefined') {
         this.selectWebm(this.state.webms[index + 1].id);
       }
     });
   }
 
+  handleOrientationChange = () => {
+    const elem = document.getElementById('video-player-wrapper');
+    const angle = screen.orientation.angle;
+
+    if ((angle === 90 || angle === -90) && elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if ((angle === 90 || angle === -90) && elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
+
+    if (angle === 0 && document.cancelFullscreen) {
+      document.cancelFullscreen();
+    } else if (angle === 0 && document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+    }
+  }
+
   closeWebmModal = () => {
+    document.querySelector(`.${s.modalOverlay}`).onclick = null;
+
     this.setState({
       selectedWebm: null,
+    }, () => {
+      window.screen.orientation.onchange = null;
     });
   }
 
@@ -294,6 +319,7 @@ class WebmList extends React.Component {
                       contentClassName={s.dialog}
                       bodyClassName={s.selectedWebmWrapper}
                       overlayClassName={s.modalOverlay}
+                      modal
                     >
                       {
                         this.state.hasPreviousWebm ?
@@ -306,12 +332,17 @@ class WebmList extends React.Component {
                           :
                           null
                       }
-                      <Webm
-                        webm={this.state.selectedWebm}
-                        isRandom={false}
-                        isLoading={this.state.isLoading}
-                        isPopup
-                      />
+                      <Swipeable
+                        onSwipedRight={this.selectPreviousWebm}
+                        onSwipedLeft={this.selectNextWebm}
+                      >
+                        <Webm
+                          webm={this.state.selectedWebm}
+                          isRandom={false}
+                          isLoading={this.state.isLoading}
+                          isPopup
+                        />
+                      </Swipeable>
                       {
                         this.state.hasNextWebm ?
                           <IconButton

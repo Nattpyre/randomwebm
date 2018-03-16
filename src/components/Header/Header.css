@@ -1,16 +1,26 @@
+@import '../variables.css';
+
 .appBar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 64px !important;
-  background-color: #4caf50 !important;
+  background-color: var(--primary-color) !important;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12);
   z-index: 1;
 }
 
 .appBar svg {
   color: white !important;
+}
+
+.logoWrapper {
+  padding: 0.5rem 2.5rem;
+}
+
+.logoWrapper img {
+  max-width: 100%;
 }
 
 .menuBtn {
@@ -25,6 +35,34 @@
   font-size: 24px !important;
   color: white !important;
   font-weight: normal;
+}
+
+.searchWrapper {
+  background-color: var(--primary-color);
+}
+
+@media (--phone) {
+  .searchWrapper {
+    left: 0;
+    top: 0;
+    height: 64px;
+    z-index: 1;
+  }
+
+  .searchWrapper > button:first-of-type {
+    margin-left: 8px !important;
+  }
+
+  .searchWrapper.searchClosed > div {
+    transition: none !important;
+  }
+}
+
+@media (--tablet) {
+  .searchWrapper {
+    position: relative !important;
+    width: auto !important;
+  }
 }
 
 .searchInputWrapper > div {

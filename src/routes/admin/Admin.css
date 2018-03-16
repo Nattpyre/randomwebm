@@ -17,10 +17,22 @@
   z-index: 0;
 }
 
+@media (--phone) {
+  .webmInfoWrapper {
+    flex-direction: column;
+  }
+}
+
 .leftBlock {
   display: flex;
   flex-direction: column;
   width: 50%;
+}
+
+@media (--phone) {
+  .leftBlock {
+    width: 100%;
+  }
 }
 
 .sourceWrapper {
@@ -46,6 +58,15 @@
   display: flex;
   margin-left: auto;
   z-index: 0;
+}
+
+@media (--phone) {
+  .rightBlock {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
 }
 
 .rightBlock > div {

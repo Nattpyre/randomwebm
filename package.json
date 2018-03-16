@@ -41,6 +41,7 @@
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.2",
     "react-infinite-scroller": "^1.0.15",
+    "react-swipeable": "^4.2.0",
     "react-tap-event-plugin": "^2.0.1",
     "sequelize": "^4.36.1",
     "sequelize-cli": "^4.0.0",

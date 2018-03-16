@@ -30,8 +30,9 @@ class VideoPlayer extends React.Component {
     this.clicks = 0;
     this.state = {
       isPaused: false,
+      isPlayed: false,
       isInFullScreen: false,
-      isLoading: true,
+      isLoading: false,
       volume: volume === null ? 1 : +volume,
       clicks: 0,
       currentTime: 0,
@@ -245,9 +246,24 @@ class VideoPlayer extends React.Component {
       playStatus = 'Play';
     }
 
+    let videoIcon = null;
+
+    if (this.video && this.state.isLoading) {
+      videoIcon = <CircularProgress className={s.videoIcon} />;
+    } else if (this.video && !this.state.isLoading && !this.state.isPlayed) {
+      videoIcon = (
+        <PlayIcon
+          style={{ width: 64, height: 64, color: 'white' }}
+          className={s.videoIcon}
+          onClick={() => this.video.play()}
+        />
+      );
+    }
+
     return (
       <div>
         <div
+          id="video-player-wrapper"
           ref={(input) => {
             this.wrapper = input;
           }}
@@ -271,6 +287,7 @@ class VideoPlayer extends React.Component {
             })}
             onPlaying={() => this.setState({
               isLoading: false,
+              isPlayed: true,
             })}
             onWaiting={() => this.setState({
               isLoading: true,
@@ -282,9 +299,7 @@ class VideoPlayer extends React.Component {
             })}
             autoPlay
           />
-          {
-            this.state.isLoading ? <CircularProgress className={s.videoLoading} /> : null
-          }
+          {videoIcon}
           <div
             className={s.videoControls}
             onMouseMove={this.handleMouseMove}

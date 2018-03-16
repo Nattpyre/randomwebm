@@ -1,24 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
-
 :root {
-  /*
-   * Typography
-   * ======================================================================== */
-
   --font-family-base: 'Roboto', 'Segoe UI', 'HelveticaNeue-Light', sans-serif;
-
-  /*
-   * Layout
-   * ======================================================================== */
-
   --max-content-width: 1000px;
+  --primary-color: #4caf50;
 
-  /*
-   * Media queries breakpoints
-   * ======================================================================== */
-
-  --screen-xs-min: 480px;  /* Extra small screen / phone */
-  --screen-sm-min: 768px;  /* Small screen / tablet */
-  --screen-md-min: 992px;  /* Medium screen / desktop */
-  --screen-lg-min: 1200px; /* Large screen / wide desktop */
+  @custom-media --phone-portrait (width <= 480px);
+  @custom-media --phone (width <= 768px);
+  @custom-media --tablet (width > 768px);
 }

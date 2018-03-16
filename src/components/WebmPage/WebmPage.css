@@ -1,8 +1,10 @@
 @import '../../components/variables.css';
 
-.root {
-  padding-left: 1em;
-  padding-right: 1em;
+@media (--tablet) {
+  .root {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
 }
 
 .container {

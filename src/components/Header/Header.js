@@ -26,6 +26,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.css';
 import history from '../../history';
 import UploadDialog from '../UploadDialog';
+import logo from './logo.png';
 
 class Header extends React.Component {
 
@@ -131,6 +132,9 @@ class Header extends React.Component {
               onRequestChange={this.toggleLeftMenu}
               overlayClassName={s.modalOverlay}
             >
+              <div className={s.logoWrapper}>
+                <img src={logo} alt="Random Webm" />
+              </div>
               <Subheader>Pages</Subheader>
               <MenuItem leftIcon={<HomeIcon />} onTouchTap={() => this.handleClick('/random')}>
                 Home
@@ -175,7 +179,14 @@ class Header extends React.Component {
             </Drawer>
             <ToolbarTitle text="Random Webm" className={s.appBarTitle} />
           </ToolbarGroup>
-          <ToolbarGroup lastChild>
+          <ToolbarGroup
+            className={`${s.searchWrapper} ${this.state.isSearchOpen ? '': s.searchClosed}`}
+            style={{
+              position: this.state.isSearchOpen ? 'absolute' : 'relative',
+              width: this.state.isSearchOpen ? '100%' : 'auto',
+            }}
+            lastChild
+          >
             <IconButton onTouchTap={this.toggleSearchField} disableTouchRipple>
               {this.state.isSearchOpen ? <CloseIcon /> : <SearchIcon />}
             </IconButton>

@@ -1,9 +1,14 @@
-@import '../../components/variables.css';
+@import '../variables.css';
 
 .webmWrapper {
   display: flex;
   flex-direction: column;
-  margin-top: 1em;
+}
+
+@media (--tablet) {
+  .webmWrapper {
+    margin-top: 1rem;
+  }
 }
 
 .webmWrapperPopup {
@@ -16,6 +21,12 @@
   position: relative;
   margin-top: 1em;
   z-index: 0;
+}
+
+@media (--phone) {
+  .webmInfoWrapper {
+    padding: 0 0.5rem;
+  }
 }
 
 .webmInfoWrapperPopup {
@@ -91,6 +102,7 @@
 }
 
 .webmBtn {
+  white-space: nowrap;
   margin-top: auto;
 }
 

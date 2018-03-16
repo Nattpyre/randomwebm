@@ -191,13 +191,13 @@
   background-color: transparent !important;
 }
 
-.videoLoading {
+.videoIcon {
   position: absolute !important;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
 
-.videoLoading svg circle {
+.playIcon svg circle {
   stroke: #ddd !important;
 }
