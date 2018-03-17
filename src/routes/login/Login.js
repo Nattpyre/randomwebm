@@ -31,18 +31,21 @@ class Login extends React.Component {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    this.context.fetch('/graphql', {
-      method: 'POST',
-      headers: new Headers({
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify({
-        query: `mutation { userLogin(email:"${email}",password:"${password}") { user { id, roles, token }, errors { key, message } } }`,
-      }),
-      credentials: 'include',
-    }).then(response => response.json()).then((data) => {
-      const result = data.data.userLogin;
+    this.context.fetch(`/graphql?query=
+      mutation {
+       adminLogin(
+         email:"${email}",
+         password:"${password}"
+       ) { 
+         token, 
+         errors { 
+           key, 
+           message 
+         } 
+       }
+      }
+    `).then(response => response.json()).then((data) => {
+      const result = data.data.adminLogin;
 
       if (result.errors.length > 0) {
         const errors = { email: null, password: null };
@@ -58,7 +61,8 @@ class Login extends React.Component {
         return;
       }
 
-      if (result.user && result.user.token) {
+      if (result.token) {
+        localStorage.setItem('token', result.token);
         window.location.href = '/admin';
       }
     });

@@ -25,6 +25,7 @@ class Admin extends React.Component {
   constructor(props) {
     super(props);
 
+    this.token = process.env.BROWSER ? localStorage.getItem('token') : null;
     this.state = {
       isLoading: false,
       webm: null,
@@ -78,8 +79,16 @@ class Admin extends React.Component {
         ) {
           id
         }
-    }`).then(response => response.json()).then((data) => {
-      if (!data.data.confirmWebm.id) {
+    }`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.token ? `${this.token}` : null,
+      },
+      credentials: 'include',
+    }).then(response => response.json()).then((data) => {
+      if (!data.data.confirmWebm || !data.data.confirmWebm.id) {
         return;
       }
 

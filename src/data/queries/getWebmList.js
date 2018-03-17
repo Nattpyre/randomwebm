@@ -27,7 +27,7 @@ const getWebmList = {
     page: { type: IntegerType },
     likedWebms: { type: new List(ID) },
   },
-  resolve(value, { tagName, order, pageSize, page, likedWebms = [] }) {
+  resolve(root, { tagName, order, pageSize, page, likedWebms = [] }) {
     let orderBy = null;
 
     if (order === 'createdAt') {

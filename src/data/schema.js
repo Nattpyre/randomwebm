@@ -9,11 +9,10 @@ import getTags from './queries/getTags';
 import uploadWebm from './mutations/uploadWebm';
 import toggleLike from './mutations/toggleLike';
 import toggleDislike from './mutations/toggleDislike';
-import addTag from './mutations/addTag';
-import deleteTag from './mutations/deleteTag';
-import userLogin from './mutations/userLogin';
+import adminLogin from './mutations/adminLogin';
 import confirmWebm from './mutations/confirmWebm';
 import removeWebm from './mutations/removeWebm';
+import verifyToken from './queries/verifyToken';
 
 const schema = new Schema({
   query: new ObjectType({
@@ -22,6 +21,7 @@ const schema = new Schema({
       getWebm,
       getWebmList,
       getTags,
+      verifyToken,
     },
   }),
   mutation: new ObjectType({
@@ -30,11 +30,9 @@ const schema = new Schema({
       uploadWebm,
       toggleLike,
       toggleDislike,
-      addTag,
-      deleteTag,
-      userLogin,
       confirmWebm,
       removeWebm,
+      adminLogin,
     },
   }),
 });

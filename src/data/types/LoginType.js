@@ -1,13 +1,13 @@
 import {
+  GraphQLString as StringType,
   GraphQLObjectType as ObjectType,
 } from 'graphql';
-import UserType from './UserType';
 import ErrorType from './ErrorType';
 
 const LoginType = new ObjectType({
   name: 'Login',
   fields: {
-    user: { type: UserType },
+    token: { type: StringType },
     errors: { type: ErrorType },
   },
 });

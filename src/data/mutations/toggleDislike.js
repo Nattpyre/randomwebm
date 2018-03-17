@@ -13,7 +13,7 @@ const toggleDislike = {
     hasLike: { type: BooleanType },
     hasDislike: { type: BooleanType },
   },
-  resolve(value, { id, hasLike, hasDislike }) {
+  resolve(root, { id, hasLike, hasDislike }) {
     return Webm.findByPrimary(id).then((webm) => {
       if (!webm) {
         return null;

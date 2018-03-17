@@ -17,7 +17,7 @@ const uploadWebm = {
     previewUrl: { type: new NonNull(StringType) },
     tags: { type: new List(StringType) },
   },
-  resolve(value, { originalName, source, hash, url, previewUrl, tags }) {
+  resolve(root, { originalName, source, hash, url, previewUrl, tags }) {
     return Webm.create({ originalName, source, hash, url, previewUrl }).then((webm) => {
       const promises = tags.map(tag => Tag.findOrCreate({ where: { name: tag.toLowerCase() } }));
 

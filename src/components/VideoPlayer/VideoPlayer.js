@@ -21,7 +21,7 @@ class VideoPlayer extends React.Component {
   constructor(props) {
     super(props);
 
-    const volume = typeof localStorage !== 'undefined' ? localStorage.getItem('volumeLevel') : 1;
+    const volume = process.env.BROWSER ? localStorage.getItem('volumeLevel') : 1;
 
     this.wrapper = null;
     this.video = null;
@@ -45,6 +45,7 @@ class VideoPlayer extends React.Component {
     this.video.volume = this.state.volume;
 
     document.addEventListener('keydown', this.addHotKeys);
+    document.addEventListener('webkitfullscreenchange', this.handleFullScreenChange)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,6 +59,7 @@ class VideoPlayer extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.addHotKeys);
+    document.removeEventListener('webkitfullscreenchange', this.handleFullScreenChange);
   }
 
   handleVideoClick = () => {
@@ -175,6 +177,16 @@ class VideoPlayer extends React.Component {
       } else if (isInFullScreen && document.webkitCancelFullScreen) {
         document.webkitCancelFullScreen();
       }
+    });
+  }
+
+  handleFullScreenChange = () => {
+    const isInFullScreen = !!document.fullscreenElement ||
+      !!document.mozFullScreenElement ||
+      !!document.webkitFullscreenElement;
+
+    this.setState({
+      isInFullScreen,
     });
   }
 

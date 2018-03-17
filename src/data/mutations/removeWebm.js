@@ -7,13 +7,18 @@ import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
 import config from '../../config.server';
 import params from '../../config.client';
+import verifyToken from '../../helpers/verifyToken';
 
 const removeWebm = {
   type: WebmType,
   args: {
     id: { type: new NonNull(StringType) },
   },
-  resolve(value, { id }) {
+  resolve(root, { id }) {
+    if (!verifyToken(root.request.headers.authorization)) {
+      throw new Error('You do not have permissions to perform this action.');
+    }
+
     return Webm.findOne({ where: { id } }).then(webm => new Promise((resolve, reject) => {
       AWS.config.update(config.AWS);
 

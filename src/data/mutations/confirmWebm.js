@@ -6,6 +6,7 @@ import {
 import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
 import Tag from '../models/Tag';
+import verifyToken from '../../helpers/verifyToken';
 
 const confirmWebm = {
   type: WebmType,
@@ -14,7 +15,11 @@ const confirmWebm = {
     source: { type: StringType },
     tags: { type: new List(StringType) },
   },
-  resolve(value, { id, source, tags }) {
+  resolve(root, { id, source, tags }) {
+    if (!verifyToken(root.request.headers.authorization)) {
+      throw new Error('You do not have permissions to perform this action.');
+    }
+
     return Webm.update({ source, isChecked: true },
       { returning: true, where: { id } },
     ).then(([affectedRows, [webm]]) => {

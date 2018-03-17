@@ -50,11 +50,20 @@ class WebmList extends React.Component {
   }
 
   componentDidMount = () => {
-    if (typeof window !== 'undefined' && window.App.user && window.App.user.roles.indexOf('administrator')) {
-      this.isAdmin = true;
-    }
+    const token = process.env.BROWSER ? localStorage.getItem('token') : null;
 
-    this.getWebmList(this.props.title);
+    if (token) {
+      this.context.fetch(`/graphql?query={verifyToken(token: "${token}")}`)
+        .then(response => response.json())
+        .then((result) => {
+          this.isAdmin = result.data.verifyToken;
+        })
+        .then(() => {
+          this.getWebmList(this.props.title);
+        });
+    } else {
+      this.getWebmList(this.props.title);
+    }
   }
 
   componentWillReceiveProps = (nextProps) => {

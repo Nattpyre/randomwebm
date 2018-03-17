@@ -15,7 +15,7 @@ const getTags = {
     webmId: { type: ID },
     limit: { type: IntegerType },
   },
-  resolve(value, { webmId, limit }) {
+  resolve(root, { webmId, limit }) {
     if (webmId) {
       return Webm.findByPrimary(webmId, { limit }).then((webm) => {
         if (!webm) {

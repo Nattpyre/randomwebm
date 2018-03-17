@@ -7,7 +7,7 @@ import {
 import sequelize from '../sequelize';
 import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
-import message from '../../tools/message';
+import message from '../../helpers/message';
 
 const getWebm = {
   type: WebmType,
@@ -17,7 +17,7 @@ const getWebm = {
     isChecked: { type: BooleanType },
     excludedIds: { type: new List(ID) },
   },
-  resolve(value, { id, hash, isChecked = true, excludedIds = [] }) {
+  resolve(root, { id, hash, isChecked = true, excludedIds = [] }) {
     if (id) {
       const params = isChecked ? { id } : { id, isChecked: false };
 

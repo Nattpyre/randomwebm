@@ -19,14 +19,13 @@ module.exports = {
 
   // Authentication
   auth: {
+    email: process.env.ADMIN_EMAIL,
+    password: process.env.ADMIN_PASSWORD,
     jwt: {
       secret: process.env.JWT_SECRET,
       expires: 60 * 60 * 24 * 180, // 180 days
     },
   },
-
-  // User roles
-  userRoles: ['moderator', 'administrator'],
 
   // Web analytics
   analytics: {

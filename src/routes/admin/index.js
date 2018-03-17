@@ -10,8 +10,23 @@ export default {
       path: '/',
       async action(context) {
         const title = 'Pending Webms';
+        const token = process.env.BROWSER ? localStorage.getItem('token') : null;
+        let isVerified = false;
 
-        if (!context.user || context.user.roles.indexOf('administrator') === -1) {
+        if (!process.env.BROWSER) {
+          return {
+            title,
+            component: <Layout>
+              <div />
+            </Layout>,
+          };
+        }
+
+        if (token) {
+          isVerified = await context.fetch(`/graphql?query={verifyToken(token: "${token}")}`).then(response => response.json()).then(result => result.data.verifyToken);
+        }
+
+        if (!isVerified) {
           return { redirect: '/login' };
         }
 
@@ -28,8 +43,23 @@ export default {
       path: '/webm/:id',
       async action(context) {
         const title = 'Edit Webm';
+        const token = process.env.BROWSER ? localStorage.getItem('token') : null;
+        let isVerified = false;
 
-        if (!context.user || context.user.roles.indexOf('administrator') === -1) {
+        if (!process.env.BROWSER) {
+          return {
+            title,
+            component: <Layout>
+              <div />
+            </Layout>,
+          };
+        }
+
+        if (token) {
+          isVerified = await context.fetch(`/graphql?query={verifyToken(token: "${token}")}`).then(response => response.json()).then(result => result.data.verifyToken);
+        }
+
+        if (!isVerified) {
           return { redirect: '/login' };
         }
 
