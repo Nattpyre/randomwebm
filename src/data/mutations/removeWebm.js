@@ -5,9 +5,9 @@ import {
 import AWS from 'aws-sdk';
 import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
-import config from '../../config.server';
-import params from '../../config.client';
-import verifyToken from '../../helpers/verifyToken';
+import config from '../../config/server';
+import params from '../../config/client';
+import verifyToken from '../../utils/verifyToken';
 
 const removeWebm = {
   type: WebmType,

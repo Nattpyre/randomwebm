@@ -7,7 +7,7 @@ import {
 import sequelize from '../sequelize';
 import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
-import message from '../../helpers/message';
+import message from '../../utils/message';
 
 const getWebm = {
   type: WebmType,

@@ -1,5 +1,5 @@
 import path from 'path';
-import config from '../src/config.server';
+import config from '../src/config/server';
 import { spawn } from './lib/cp';
 
 const options = {

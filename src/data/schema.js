@@ -6,13 +6,13 @@ import {
 import getWebm from './queries/getWebm';
 import getWebmList from './queries/getWebmList';
 import getTags from './queries/getTags';
+import verifyToken from './queries/verifyToken';
 import uploadWebm from './mutations/uploadWebm';
 import toggleLike from './mutations/toggleLike';
 import toggleDislike from './mutations/toggleDislike';
 import adminLogin from './mutations/adminLogin';
 import confirmWebm from './mutations/confirmWebm';
 import removeWebm from './mutations/removeWebm';
-import verifyToken from './queries/verifyToken';
 
 const schema = new Schema({
   query: new ObjectType({
@@ -30,9 +30,9 @@ const schema = new Schema({
       uploadWebm,
       toggleLike,
       toggleDislike,
+      adminLogin,
       confirmWebm,
       removeWebm,
-      adminLogin,
     },
   }),
 });

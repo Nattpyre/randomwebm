@@ -7,7 +7,7 @@ import SparkMD5 from 'spark-md5';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Dropzone from '../Dropzone';
 import s from './UploadDialog.css';
-import config from '../../config.client';
+import config from '../../config/client';
 
 class UploadDialog extends React.Component {
 

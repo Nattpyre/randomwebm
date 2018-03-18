@@ -6,7 +6,7 @@ import {
 import WebmType from '../types/WebmType';
 import Webm from '../models/Webm';
 import Tag from '../models/Tag';
-import verifyToken from '../../helpers/verifyToken';
+import verifyToken from '../../utils/verifyToken';
 
 const confirmWebm = {
   type: WebmType,

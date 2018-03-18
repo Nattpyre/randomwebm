@@ -24,7 +24,7 @@ import SearchIcon from 'material-ui/svg-icons/action/search';
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.css';
-import history from '../../history';
+import history from '../../utils/history';
 import UploadDialog from '../UploadDialog';
 import logo from './logo.png';
 

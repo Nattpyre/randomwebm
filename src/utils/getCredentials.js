@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import config from '../config.server';
+import config from '../config/server';
 
 const getCredentials = () => new Promise((resolve, reject) => {
   const STS = new AWS.STS({

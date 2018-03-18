@@ -5,7 +5,7 @@ import {
 import jwt from 'jsonwebtoken';
 import SparkMD5 from 'spark-md5';
 import LoginType from '../types/LoginType';
-import config from '../../config.server';
+import config from '../../config/server';
 
 const adminLogin = {
   type: LoginType,

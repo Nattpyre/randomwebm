@@ -80,13 +80,9 @@ class Admin extends React.Component {
           id
         }
     }`, {
-      method: 'POST',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
         Authorization: this.token ? `${this.token}` : null,
       },
-      credentials: 'include',
     }).then(response => response.json()).then((data) => {
       if (!data.data.confirmWebm || !data.data.confirmWebm.id) {
         return;

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import config from '../config.server';
+import config from '../config/server';
 
 
 const verifyToken = (token) => {

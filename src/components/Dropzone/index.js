@@ -6,7 +6,7 @@ import DoneIcon from 'material-ui/svg-icons/file/cloud-done';
 import ErrorIcon from 'material-ui/svg-icons/alert/error-outline';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Dropzone.css';
-import config from '../../config.client';
+import config from '../../config/client';
 
 class Dropzone extends React.Component {
   static propTypes = {
