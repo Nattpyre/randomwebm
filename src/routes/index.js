@@ -1,17 +1,14 @@
 /* eslint-disable global-require */
 
-// The top-level (parent) route
 export default {
 
   path: '/',
 
-  // Keep in mind, routes are evaluated in order
   children: [
     require('./random').default,
     require('./about').default,
     require('./list').default,
     require('./login').default,
-    require('./register').default,
     require('./admin').default,
     require('./tag').default,
     require('./webm').default,
