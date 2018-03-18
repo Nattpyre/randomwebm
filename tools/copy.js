@@ -1,24 +1,12 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import path from 'path';
 import chokidar from 'chokidar';
 import { writeFile, copyFile, makeDir, copyDir, cleanDir } from './lib/fs';
 import pkg from '../package.json';
 import { format } from './run';
 
-/**
- * Copies static files such as robots.txt, favicon.ico to the
- * output (build) folder.
- */
 async function copy() {
   await makeDir('build');
+
   await Promise.all([
     writeFile('build/package.json', JSON.stringify({
       private: true,
@@ -28,6 +16,7 @@ async function copy() {
         start: 'node server.js',
       },
     }, null, 2)),
+
     copyDir('public', 'build/public'),
   ]);
 
@@ -40,6 +29,7 @@ async function copy() {
       const start = new Date();
       const src = path.relative('./', filePath);
       const dist = path.join('build/', src.startsWith('src') ? path.relative('src', src) : src);
+
       switch (event) {
         case 'add':
         case 'change':
@@ -53,8 +43,10 @@ async function copy() {
         default:
           return;
       }
+
       const end = new Date();
       const time = end.getTime() - start.getTime();
+
       console.info(`[${format(end)}] ${event} '${dist}' after ${time} ms`);
     });
   }

@@ -138,7 +138,7 @@ if (__DEV__) {
 }
 
 if (module.hot) {
-  module.hot.accept('./router', () => {
+  module.hot.accept('./utils/router', () => {
     router = require('./utils/router').default;
 
     if (appInstance) {

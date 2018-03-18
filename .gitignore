@@ -4,7 +4,4 @@ node_modules
 npm-debug.log
 yarn-error.log
 coverage
-.nyc_output
-yarn.lock
-src/s3.json
 .env
