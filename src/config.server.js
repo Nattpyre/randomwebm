@@ -27,12 +27,6 @@ module.exports = {
     },
   },
 
-  // Web analytics
-  analytics: {
-    // https://analytics.google.com/
-    googleTrackingId: process.env.GOOGLE_TRACKING_ID, // UA-XXXXX-X
-  },
-
   // Amazon AWS
   AWS: {
     region: process.env.S3_REGION,

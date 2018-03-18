@@ -73,12 +73,6 @@ let onRenderComplete = function initialRenderComplete() {
     // or scroll to the given #hash anchor
     // or scroll to top of the page
     window.scrollTo(scrollX, scrollY);
-
-    // Google Analytics tracking. Don't send 'pageview' event after
-    // the initial rendering, as it was already sent
-    if (window.ga) {
-      window.ga('send', 'pageview', createPath(location));
-    }
   };
 };
 
