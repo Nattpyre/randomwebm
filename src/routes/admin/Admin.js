@@ -104,7 +104,11 @@ class Admin extends React.Component {
         ) {
           id
         }
-    }`).then(response => response.json()).then((data) => {
+    }`, {
+      headers: {
+        Authorization: this.token ? `${this.token}` : null,
+      },
+    }).then(response => response.json()).then((data) => {
       if (!data.data.removeWebm.id) {
         return;
       }
