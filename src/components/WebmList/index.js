@@ -168,7 +168,6 @@ class WebmList extends React.Component {
         hasPreviousWebm,
         hasNextWebm,
       }, () => {
-        window.screen.orientation.onchange = this.handleOrientationChange;
         document.querySelector(`.${s.modalOverlay}`).onclick = this.closeWebmModal;
       });
     });
@@ -188,23 +187,6 @@ class WebmList extends React.Component {
         this.selectWebm(this.state.webms[index + 1].id);
       }
     });
-  }
-
-  handleOrientationChange = () => {
-    const elem = document.getElementById('video-player-wrapper');
-    const angle = screen.orientation.angle;
-
-    if ((angle === 90 || angle === -90) && elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if ((angle === 90 || angle === -90) && elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    }
-
-    if (angle === 0 && document.cancelFullscreen) {
-      document.cancelFullscreen();
-    } else if (angle === 0 && document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
-    }
   }
 
   closeWebmModal = () => {

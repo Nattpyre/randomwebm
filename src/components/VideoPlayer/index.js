@@ -45,7 +45,8 @@ class VideoPlayer extends React.Component {
     this.video.volume = this.state.volume;
 
     document.addEventListener('keydown', this.addHotKeys);
-    document.addEventListener('webkitfullscreenchange', this.handleFullScreenChange)
+    document.addEventListener('webkitfullscreenchange', this.handleFullScreenChange);
+    window.screen.orientation.addEventListener('change', this.handleOrientationChange);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -60,6 +61,7 @@ class VideoPlayer extends React.Component {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.addHotKeys);
     document.removeEventListener('webkitfullscreenchange', this.handleFullScreenChange);
+    window.screen.orientation.removeEventListener('change', this.handleOrientationChange);
   }
 
   handleVideoClick = () => {
@@ -188,6 +190,23 @@ class VideoPlayer extends React.Component {
     this.setState({
       isInFullScreen,
     });
+  }
+
+  handleOrientationChange = () => {
+    const elem = this.wrapper;
+    const angle = screen.orientation.angle;
+
+    if ((angle === 90 || angle === -90) && elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if ((angle === 90 || angle === -90) && elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
+
+    if (angle === 0 && document.cancelFullscreen) {
+      document.cancelFullscreen();
+    } else if (angle === 0 && document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+    }
   }
 
   handleVideoDownload = () => {
