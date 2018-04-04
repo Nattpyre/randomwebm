@@ -19,9 +19,12 @@ const toggleDislike = {
         return null;
       }
 
+      const likes = hasLike ? webm.likes - 1 : webm.likes;
+      const dislikes = hasDislike ? webm.dislikes - 1 : webm.dislikes + 1;
+
       webm.update({
-        dislikes: hasDislike ? webm.dislikes - 1 : webm.dislikes + 1,
-        likes: hasLike ? webm.likes - 1 : webm.likes,
+        dislikes: dislikes >= 0 ? dislikes : 0,
+        likes: likes >= 0 ? likes : 0,
       });
 
       return webm;
